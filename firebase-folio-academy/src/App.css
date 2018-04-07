@@ -1,0 +1,9 @@
+@media print {
+  .Lesson_Page_TopMenu {
+    display: none;
+  }
+  .Legal_Size_Page {
+    box-shadow: none;
+    margin: 0px;
+  }
+}

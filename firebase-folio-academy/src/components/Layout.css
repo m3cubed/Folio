@@ -1,0 +1,19 @@
+.Lesson_Plan_Page {
+  padding-bottom: 70px;
+}
+
+.Lesson_Page_TopMenu {
+  height: 70px;
+  text-align: center;
+  margin-bottom: 50px !important;
+}
+
+.Lesson_Page_TopMenu > .ant-menu-item {
+  position: relative;
+  top: 15px !important;
+}
+
+.react-grid-layout {
+  border: none;
+  box-shadow: none;
+}

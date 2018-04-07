@@ -1,0 +1,23 @@
+.login-form {
+  max-width: 300px;
+  margin-left: 0px !important;
+  margin-right: 0px !important;
+  margin: auto !important;
+}
+.login-form-forgot {
+  float: right;
+}
+.login-form-button {
+  width: 100%;
+}
+
+.Login_Wrapper {
+  margin: 0px auto;
+}
+
+.Signin_Google_Button {
+  margin-left: 0px !important;
+  margin-right: 0px !important;
+  margin: 0px auto !important;
+  width: 300px;
+}
