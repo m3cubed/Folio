@@ -157,7 +157,7 @@ class LoginPage extends Component {
         </div>
         <Button
           onClick={() => {
-            this.state;
+            console.log(this.state);
           }}
         >
           Show State
