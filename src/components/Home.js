@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import ReactDOM from "react-dom";
-import firebase from "@firebase/app";
 import { Button, Input, Popover } from "antd";
 import { store } from "./base";
 import { EditorState, convertToRaw, ContentState } from "draft-js";
@@ -15,11 +13,11 @@ import Slate from "./Slate.js";
 
 class Home extends Component {
   state = {
-    editorState: EditorState.createEmpty()
+    editorState: EditorState.createEmpty(),
   };
   onEditorStateChange = editorState => {
     this.setState({
-      editorState
+      editorState,
     });
   };
 
@@ -27,9 +25,7 @@ class Home extends Component {
     store.syncDoc(`/Curriculum/Ontario/High School/Choices`, {
       context: this,
       state: "syncstate",
-      then(data) {
-        console.log(this.state);
-      }
+      then(data) {},
     });
   }
 
@@ -40,12 +36,11 @@ class Home extends Component {
     }/${this.state.inputSubject}/${this.state.inputCourse}/${
       this.state.inputUnit
     }`;
-    console.log(this.state);
     store
       .addToCollection(
         pathUnit,
         { key: this.state.inputKey, description: this.state.inputDescription },
-        `${this.state.inputType}`
+        `${this.state.inputType}`,
       )
       .then(data => {
         let fromChoices = this.state.syncstate;
@@ -54,7 +49,7 @@ class Home extends Component {
           var listSubjects = fromChoices[this.state.inputGrade];
           if (
             fromChoices[this.state.inputGrade].hasOwnProperty(
-              this.state.inputSubject
+              this.state.inputSubject,
             )
           ) {
             //if subject already exists
@@ -71,7 +66,7 @@ class Home extends Component {
                   this.state.inputCourse
                 ];
               listUnits = listUnits.filter(
-                list => list !== this.state.inputUnit
+                list => list !== this.state.inputUnit,
               );
               listUnits.push(this.state.inputUnit);
               listUnits.sort();
@@ -81,7 +76,7 @@ class Home extends Component {
                 value: [this.state.inputUnit],
                 writable: true,
                 configurable: true,
-                enumerable: true
+                enumerable: true,
               });
             }
           } else {
@@ -90,7 +85,7 @@ class Home extends Component {
               value: { [this.state.inputCourse]: [this.state.inputUnit] },
               writable: true,
               configurable: true,
-              enumerable: true
+              enumerable: true,
             });
           }
         } else {
@@ -98,16 +93,16 @@ class Home extends Component {
           Object.defineProperty(fromChoices, this.state.inputGrade, {
             value: {
               [this.state.inputSubject]: {
-                [this.state.inputCourse]: [this.state.inputUnit]
-              }
+                [this.state.inputCourse]: [this.state.inputUnit],
+              },
             },
             writable: true,
             configurable: true,
-            enumerable: true
+            enumerable: true,
           });
         }
         this.setState({
-          syncstate: fromChoices
+          syncstate: fromChoices,
         });
       })
       .catch(err => console.log(err));
@@ -124,7 +119,7 @@ class Home extends Component {
     );
 
     let code = {
-      code: codestring
+      code: codestring,
     };
     const { editorState } = this.state;
 
@@ -149,8 +144,8 @@ class Home extends Component {
               .get(
                 "/Curriculum/Ontario/High School/Grade 9/Science/SNC1D - Academic Science/A - Scientific Investigation Skills and Career Exploration/Overall Expectations",
                 {
-                  context: this
-                }
+                  context: this,
+                },
               )
               .then(data => console.log(data.key))
           }
@@ -207,7 +202,6 @@ class Home extends Component {
                 unit = unit.toLowerCase();
                 unit = unit.replace(/\b\w/g, l => l.toUpperCase());
                 unit = unit.replace(/\W\s/, " - ");
-                console.log(unit);
                 this.setState({ inputUnit: e.target.value });
               }}
             />
@@ -259,7 +253,7 @@ class Home extends Component {
             onChange={e => {
               let value = e.target.value.replace(
                 /\bBy the end of this course, students will:\n*/,
-                " "
+                " ",
               );
               value = value.split(/\s{2,}|\n\n|\t/);
               let key = [];
@@ -275,7 +269,7 @@ class Home extends Component {
               console.log(description);
               this.setState({
                 inputKey: key,
-                inputDescription: description
+                inputDescription: description,
               });
             }}
             style={{ height: 300, width: 500 }}

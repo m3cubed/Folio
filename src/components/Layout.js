@@ -9,12 +9,29 @@ import "./Layout.css";
 const { Header, Content, Footer } = Layout;
 
 class MainLayout extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      user: "",
+    };
+  }
+
+  handleUser = user => {
+    this.setState({
+      user: user,
+    });
+  };
+
   render() {
     return (
       <div>
         <Layout className="layout">
           <Header>
-            <NavbarHeader />
+            <NavbarHeader
+              user={() => {
+                this.handleUser.bind(this);
+              }}
+            />
           </Header>
           <Content style={{ padding: "0 50px" }}>
             <div style={{ background: "#fff", padding: 24, minHeight: 680 }}>

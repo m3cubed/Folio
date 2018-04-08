@@ -21,3 +21,13 @@
   margin: 0px auto !important;
   width: 300px;
 }
+
+.Google_Button {
+  content: url(../Icons/btn_google_signin_light_normal_web.png);
+}
+.Google_Button:hover {
+  content: url(../Icons/btn_google_signin_light_focus_web.png);
+}
+.Google_Button:active {
+  content: url(../Icons/btn_google_signin_light_pressed_web.png);
+}

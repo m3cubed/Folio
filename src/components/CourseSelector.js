@@ -1,5 +1,4 @@
 import React from "react";
-import { render } from "react-dom";
 import { Menu, Dropdown, Icon, List, Checkbox, Row, Col } from "antd";
 import { store } from "./base";
 import "./CourseSelector.css";
@@ -146,7 +145,6 @@ class CourseSelector extends React.Component {
         //Render list and checkbox
         const specific = [];
         for (let i = 0; i < data.key.length; i++) {
-          const list = data.key[i] + ". " + data.description[i];
           specific.push(
             <List.Item key={data.key[i]}>
               <List.Item.Meta
@@ -184,7 +182,6 @@ class CourseSelector extends React.Component {
 
   //Create list of curriculum to send back to modal
   handleCheckbox = checkValues => {
-    const prepareList = [];
     const position = [];
     const keys = [];
     const descriptions = [];
@@ -242,7 +239,7 @@ class CourseSelector extends React.Component {
       <div>
         <span>
           <Dropdown overlay={gradeMenu}>
-            <a className="ant-dropdown-link" href="#">
+            <a className="ant-dropdown-link">
               {this.state.grade} <Icon type="down" />
             </a>
           </Dropdown>
@@ -250,7 +247,7 @@ class CourseSelector extends React.Component {
 
         <span style={{ marginLeft: "20px" }}>
           <Dropdown overlay={subjectMenu} disabled={this.state.subjectVisible}>
-            <a className="ant-dropdown-link" href="#">
+            <a className="ant-dropdown-link">
               {this.state.subject} <Icon type="down" />
             </a>
           </Dropdown>
@@ -258,7 +255,7 @@ class CourseSelector extends React.Component {
 
         <span style={{ marginLeft: "20px" }}>
           <Dropdown overlay={courseMenu} disabled={this.state.courseVisible}>
-            <a className="ant-dropdown-link" href="#">
+            <a className="ant-dropdown-link">
               {this.state.course} <Icon type="down" />
             </a>
           </Dropdown>
@@ -266,7 +263,7 @@ class CourseSelector extends React.Component {
 
         <span style={{ marginLeft: "20px" }}>
           <Dropdown overlay={unitMenu} disabled={this.state.unitVisible}>
-            <a className="ant-dropdown-link" href="#">
+            <a className="ant-dropdown-link">
               {this.state.unit} <Icon type="down" />
             </a>
           </Dropdown>

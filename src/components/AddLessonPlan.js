@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { base, store } from "./base.js";
+import { store } from "./base.js";
 import firebase from "firebase";
-import { Link, Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Input, Modal, Button, Table } from "antd";
 
 class AddLessonPlan extends Component {
@@ -18,7 +18,7 @@ class AddLessonPlan extends Component {
 
   componentWillMount() {
     //Call Firestore for user lessons
-    const user = firebase.auth().currentUser;
+
     this.removeAuthListener = firebase.auth().onAuthStateChanged(user => {
       if (user) {
         this.setState({
@@ -31,7 +31,6 @@ class AddLessonPlan extends Component {
             this.setState({
               lessons: data,
             });
-            this.renderLessonList;
           },
         });
       } else {
@@ -122,13 +121,14 @@ class AddLessonPlan extends Component {
       author_id: user.uid,
       lessonTitle: this.state.lessonTitle,
       date: fullDate,
+      shortDate: date,
       year: nowDate.getFullYear(),
       month: month,
       day: nowDate.getDate(),
     };
 
     //API call
-    var immediatelyAvailableReference = store
+    store
       .addToCollection(`users/${user.uid}/lessons`, data)
       .then(newLocation => {
         this.setState({
@@ -140,7 +140,7 @@ class AddLessonPlan extends Component {
         //handle error
       });
     //available immediately, you don't have to wait for the Promise to resolve
-    var generatedKey = immediatelyAvailableReference.key;
+    //var generatedKey = immediatelyAvailableReference.key;
   };
 
   render() {

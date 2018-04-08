@@ -1,27 +1,26 @@
 import React from "react";
-import firebase from "@firebase/app";
-import { Button, Modal, Tabs, List } from "antd";
+
+import { Button, Modal, Tabs } from "antd";
 import CourseSelector from "./CourseSelector.js";
-import { auth, base, app, store } from "./base";
+
 import TextDraft from "./TextDraft";
 import CheckList from "./CheckList.js";
 
 const TabPane = Tabs.TabPane;
 class GridModal extends React.Component {
+  static getDerivedStateFromProps(nextProps, prevState) {
+    return {
+      gridID: nextProps.gridID,
+      visible: nextProps.showModal,
+    };
+  }
   constructor(props) {
     super(props);
     this.state = {
-      gridID: this.props.gridID,
+      gridID: "",
       visible: false,
       modalKey: "Curriculum",
     };
-  }
-
-  componentDidMount() {
-    const user = firebase.auth().currentUser;
-    this.setState({
-      user: user,
-    });
   }
 
   backToGrid = () => {
@@ -31,6 +30,7 @@ class GridModal extends React.Component {
       this.props.gridID,
       this.state.modalKey,
     );
+    this.props.toggleModal();
     this.setState({
       visible: false,
     });
@@ -45,22 +45,14 @@ class GridModal extends React.Component {
   render() {
     return (
       <div className="Modal_Base">
-        <button
-          className="Grid_Button"
-          onClick={() => {
-            this.setState({ visible: true });
-          }}
-        >
-          <i className="fas fa-plus-circle fa-2x" />
-          <br />
-          Content
-        </button>
-
         <Modal
           title="Pick Your Poison"
           visible={this.state.visible}
           width="1200px"
-          onCancel={() => this.setState({ visible: false })}
+          onCancel={() => {
+            this.props.toggleModal();
+            this.setState({ visible: false });
+          }}
           footer={[
             <Button
               key="back"

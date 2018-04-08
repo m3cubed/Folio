@@ -1,13 +1,11 @@
 import React, { Component } from "react";
 import firebase from "firebase";
-import { base, config } from "./base";
+import { Redirect } from "react-router-dom";
 import { Form, Icon, Input, Button, Checkbox } from "antd";
 import LoginWithGoogle from "./LoginWithGoogle.js";
 import "./LoginPage.css";
 
 const FormItem = Form.Item;
-
-const auth = firebase.auth();
 
 class NormalLoginForm extends React.Component {
   handleSubmit = e => {
@@ -88,76 +86,20 @@ class LoginPage extends Component {
     this.state = {
       email: "",
       password: "",
-      logout: "btn disabled",
+      redirectUser: false,
     };
-    this.handleClick = this.handleClick.bind(this);
   }
 
-  componentWillMount() {
-    var user = firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        this.setState({
-          currentUser: user,
-          email: user.email,
-          password: user.password,
-          logout: "btn",
-        });
-      } else {
-        this.setState({
-          currentUser: null,
-          logout: "btn disabled",
-        });
-      }
-    });
-  }
-
-  handleClick = e => {
-    e.preventDefault();
-    switch (this.state.button) {
-      case "Login":
-        auth
-          .signInWithEmailAndPassword(
-            this.refs.email.value,
-            this.refs.password.value,
-          )
-          .then(user => {
-            console.log(user);
-            this.props.setCurrentUser(user);
-          })
-          .catch(err => console.log(err.message));
-        break;
-      case "Register":
-        auth
-          .createUserWithEmailAndPassword(
-            this.refs.email.value,
-            this.refs.password.value,
-          )
-          .then(console.log("You have registered!"))
-          .catch(err => console.log(err.message));
-        break;
-      case "Logout":
-        auth
-          .signOut()
-          .then(console.log("You have logged out!"))
-          .catch(err => console.log(err.message));
-        break;
-      default:
-        null;
-    }
-    auth.onAuthStateChanged(firebaseUser => {
-      if (firebaseUser) {
-        this.setState({
-          logout: "btn",
-        });
-      } else {
-        this.setState({
-          logout: "btn disabled",
-        });
-      }
+  handleRedirect = () => {
+    this.setState({
+      redirectUser: true,
     });
   };
 
   render() {
+    if (this.redirectUser) {
+      return <Redirect to="/LessonPlanList" />;
+    }
     return (
       <div className="Login_Page">
         <div className="Login_Wrapper">
@@ -165,21 +107,10 @@ class LoginPage extends Component {
             <WrappedNormalLoginForm />
           </span>
         </div>
-        <Button
-          onClick={() => {
-            console.log(this.state);
-          }}
-        >
-          Show State
-        </Button>
-        <Button
-          onClick={() => {
-            firebase.auth().signOut();
-          }}
-        >
-          Sign Out
-        </Button>
-        <LoginWithGoogle />
+        <hr />
+        <div style={{ textAlign: "center" }}>
+          <LoginWithGoogle redirect={this.handleRedirect.bind(this)} />
+        </div>
       </div>
     );
   }

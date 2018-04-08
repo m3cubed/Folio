@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Switch, Route } from "react-router-dom";
 import LoginPage from "./LoginPage.js";
-import LessonPlanner from "./LessonPlanner.js";
 import Home from "./Home";
 import AddLessonPlan from "./AddLessonPlan";
 import { app } from "./base";

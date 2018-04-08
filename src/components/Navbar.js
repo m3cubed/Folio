@@ -16,10 +16,19 @@ class NavbarHeader extends Component {
   userOrNot = () => {
     switch (this.state.authenticated) {
       case true:
-        return this.state.currentUser;
-        break;
+        return (
+          <Menu.SubMenu title={this.state.currentUserEmail}>
+            <Menu.Item key="signout">Sign-out</Menu.Item>
+          </Menu.SubMenu>
+        );
+
       case false:
-        return <Link to="/login">Login</Link>;
+        return (
+          <Menu.Item>
+            <Link to="/login">Login</Link>
+          </Menu.Item>
+        );
+
       default:
         return null;
     }
@@ -29,17 +38,17 @@ class NavbarHeader extends Component {
     this.removeAuthListener = firebase.auth().onAuthStateChanged(user => {
       if (user) {
         this.setState({
-          currentUser: user.email,
+          currentUser: user,
+          currentUserEmail: user.email,
           authenticated: true,
         });
-        this.userOrNot;
+        this.props.user(user);
       } else {
         const login = <Link to="/login">Login</Link>;
         this.setState({
-          currentUser: login,
+          currentUserEmail: login,
           authenticated: false,
         });
-        this.userOrNot;
       }
     });
   }
@@ -50,16 +59,23 @@ class NavbarHeader extends Component {
   render() {
     return (
       <div>
-        <Menu theme="dark" mode="horizontal" style={{ lineHeight: "64px" }}>
-          <Menu.Item key="user" selectable="false">
-            {this.state.currentUser}
-          </Menu.Item>
+        <Menu
+          theme="dark"
+          mode="horizontal"
+          style={{ lineHeight: "64px" }}
+          onClick={e => {
+            switch (e.key) {
+              case "signout":
+                firebase.auth().signOut();
+                break;
+              default:
+                return null;
+            }
+          }}
+        >
+          {this.userOrNot(this.state.authenticated)}
           <Menu.Item key="home" href="/">
             <Link to="/">Test Page</Link>
-          </Menu.Item>
-
-          <Menu.Item key="login">
-            <Link to="/login">Login</Link>
           </Menu.Item>
 
           <Menu.Item key="LessonPlanList">

@@ -1,13 +1,11 @@
 import React from "react";
-import { render } from "react-dom";
 import ReactGridLayout from "react-grid-layout";
-import CourseSelector from "./CourseSelector.js";
 import PropTypes from "prop-types";
 import "./LessonPlanner.css";
 import GridModal from "./Modal";
-import { message, Button, List, Modal, Card } from "antd";
+import { message, List, Card } from "antd";
 import firebase from "@firebase/app";
-import { base, store } from "./base";
+import { store } from "./base";
 
 const styles = {
   fontFamily: "sans-serif",
@@ -16,36 +14,24 @@ const styles = {
   margin: "0 auto",
 };
 
-const para = {
-  overflowY: "hidden",
-};
-
-const textbox = {
-  width: "100%",
-  height: "300px",
-  margin: "0 auto",
-  resize: "none",
-  borderRadius: "3px",
-  marginTop: "12px",
-};
-
 class MyFirstGrid extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       showModal: false,
-      show: false,
       gridNUM: 4,
       addGrid: false,
       isDraggable: true,
       layout: [],
       rawData: {},
       headings: {},
+      modalGridID: "",
     };
     this.renderGrids = this.renderGrids.bind(this);
     this.handleModalContent = this.handleModalContent.bind(this);
     this.renderModalContent = this.renderModalContent.bind(this);
+    this.toggleModal = this.toggleModal.bind(this);
   }
 
   createGridUID = () => {
@@ -54,6 +40,13 @@ class MyFirstGrid extends React.Component {
         .toString(36)
         .substring(2) + new Date().getTime().toString(36);
     return uniqueID;
+  };
+
+  toggleModal = () => {
+    this.setState({
+      showModal: !this.state.showModal,
+    });
+    console.log(this.state.showModal);
   };
 
   gridNUMincrease = () => {
@@ -135,12 +128,16 @@ class MyFirstGrid extends React.Component {
         for (let i in keys) {
           const cardList = [];
           for (let j in data[keys[i]]) {
-            cardList.push(<div>{data[keys[i]][j]}</div>);
+            cardList.push(<div key={j}>{data[keys[i]][j]}</div>);
           }
-          cards.push(<Card title={keys[i]}>{cardList}</Card>);
+          cards.push(
+            <Card title={keys[i]} key={keys[i]}>
+              {cardList}
+            </Card>,
+          );
         }
         content = (
-          <div classname="Modal-Content" key={`CheckBox${gridID}`}>
+          <div className="Modal-Content" key={`CheckBox${gridID}`}>
             {cards}
           </div>
         );
@@ -161,7 +158,6 @@ class MyFirstGrid extends React.Component {
   };
 
   removeGrid = gridID => {
-    console.log(gridID);
     const newLayout = this.state.layout.filter(
       item => item.i !== gridID.toString(),
     );
@@ -183,7 +179,7 @@ class MyFirstGrid extends React.Component {
     if (data[0] === undefined) {
       for (let j = 0; j < gridNUM; j++) {
         const gridID = this.createGridUID();
-        const newState = this.state;
+
         if (j === 0) {
           layout.push({
             i: gridID,
@@ -261,29 +257,35 @@ class MyFirstGrid extends React.Component {
                   });
                 }}
               />
-              <div className="Grid_Drag_Handle" />
-              <span className="Grid_Custom_Menu">
-                <i className="fas fa-cog" />
-              </span>
-
-              <div className="Grid_Menu">
-                <span className="Modal_Base">
-                  <GridModal
-                    Id={this.props.Id.match.params.id}
-                    gridID={gridID}
-                    handleGridData={this.handleModalContent.bind(this)}
-                  />
+              <div className="Grid_Drag_Handle">
+                <span className="Grid_Custom_Menu">
+                  <i className="fas fa-cog" />
                 </span>
-                <hr className="Grid_Menu_Linebreak" />
-                <button
-                  className="Grid_Button"
-                  onClick={this.removeGrid.bind(this, gridID)}
-                >
-                  <i className="fas fa-times fa-2x" />
-                  <br />
-                  Delete
-                </button>
+                <div className="Grid_Menu">
+                  <button
+                    className="Grid_Button"
+                    onClick={e => {
+                      this.setState({ modalGridID: gridID });
+                      this.toggleModal();
+                    }}
+                  >
+                    <i className="fas fa-plus-circle fa-2x" />
+                    <br />
+                    Content
+                  </button>
+
+                  <hr className="Grid_Menu_Linebreak" />
+                  <button
+                    className="Grid_Button"
+                    onClick={this.removeGrid.bind(this, gridID)}
+                  >
+                    <i className="fas fa-times fa-2x" />
+                    <br />
+                    Delete
+                  </button>
+                </div>
               </div>
+
               <div className="Grid_Content">{thisState[gridIDContent]}</div>
             </div>,
           );
@@ -292,7 +294,7 @@ class MyFirstGrid extends React.Component {
     } else {
       for (let j = 0; j < gridNUM; j++) {
         const gridID = data[j].i;
-        const newState = this.state;
+
         if (j === 0) {
           rows.push(
             <div key={data[j].i} data-grid={data[j]}>
@@ -328,19 +330,16 @@ class MyFirstGrid extends React.Component {
             </div>,
           );
         } else {
-          {
-            /*----------------------------------------------------*/
-          }
           const thisState = this.state;
-          //data[j].i = "N" + j;
-          const gridIDContent = `${data[j].i}Content`;
+
+          const gridIDContent = `${gridID}Content`;
           rows.push(
-            <div className="Grid_Main" key={data[j].i} data-grid={data[j]}>
+            <div className="Grid_Main" key={gridID} data-grid={data[j]}>
               <textarea
                 className="Grid_Header"
                 placeholder="Header"
-                id={data[j].i}
-                defaultValue={this.state.headings[data[j].i]}
+                id={gridID}
+                defaultValue={this.state.headings[gridID]}
                 onChange={e => {
                   const headings = Object.defineProperty(
                     this.state.headings,
@@ -358,28 +357,36 @@ class MyFirstGrid extends React.Component {
                 }}
               />
 
-              <div className="Grid_Drag_Handle" />
-              <span className="Grid_Custom_Menu">
-                <i className="fas fa-cog" />
-              </span>
-              <div className="Grid_Menu">
-                <span className="Modal_Base">
-                  <GridModal
-                    Id={this.props.Id.match.params.id}
-                    gridID={data[j].i}
-                    handleGridData={this.handleModalContent.bind(this)}
-                  />
+              <div className="Grid_Drag_Handle">
+                <span className="Grid_Custom_Menu">
+                  <i className="fas fa-cog" />
                 </span>
-                <hr className="Grid_Menu_Linebreak" />
-                <button
-                  className="Grid_Button"
-                  onClick={this.removeGrid.bind(this, data[j].i)}
-                >
-                  <i className="fas fa-times fa-2x" />
-                  <br />
-                  Delete
-                </button>
+
+                <div className="Grid_Menu">
+                  <button
+                    className="Grid_Button"
+                    onClick={e => {
+                      this.setState({ modalGridID: gridID });
+                      this.toggleModal();
+                    }}
+                  >
+                    <i className="fas fa-plus-circle fa-2x" />
+                    <br />
+                    Content
+                  </button>
+
+                  <hr className="Grid_Menu_Linebreak" />
+                  <button
+                    className="Grid_Button"
+                    onClick={this.removeGrid.bind(this, gridID)}
+                  >
+                    <i className="fas fa-times fa-2x" />
+                    <br />
+                    Delete
+                  </button>
+                </div>
               </div>
+
               <div className="Grid_Content">{thisState[gridIDContent]}</div>
             </div>,
           );
@@ -419,10 +426,10 @@ class MyFirstGrid extends React.Component {
             }
             if (data.layoutChange) {
               const layout = JSON.parse(data.layoutChange);
-              const rawDataTest = Object.keys(data.rawData);
+
               if (data.rawData !== "{}") {
                 const rawData = JSON.parse(data.rawData);
-                console.log(rawData);
+
                 this.setState(
                   {
                     lessonTitle: data.lessonTitle,
@@ -434,9 +441,8 @@ class MyFirstGrid extends React.Component {
                   },
                   function() {
                     const gridIDs = Object.keys(rawData);
-                    console.log(gridIDs);
+
                     for (let i in gridIDs) {
-                      console.log(rawData[gridIDs[i]]);
                       this.renderModalContent(gridIDs[i]);
                     }
                   },
@@ -476,7 +482,6 @@ class MyFirstGrid extends React.Component {
   }
 
   componentWillUnmount() {
-    const user = firebase.auth().currentUser;
     const rawData = JSON.stringify(this.state.rawData);
     store.updateDoc(
       `/users/${this.state.currentUserID}/lessons/${
@@ -496,6 +501,14 @@ class MyFirstGrid extends React.Component {
     return (
       <div className="Legal_Size_Page">
         <div className="TEST">
+          <GridModal
+            Id={this.props.Id.match.params.id}
+            gridID={this.state.modalGridID}
+            handleGridData={this.handleModalContent.bind(this)}
+            showModal={this.state.showModal}
+            toggleModal={this.toggleModal}
+          />
+
           <ReactGridLayout
             className="layout"
             cols={24}
@@ -504,6 +517,7 @@ class MyFirstGrid extends React.Component {
             layout={this.state.layout}
             containerPadding={[0, 0]}
             margin={[3, 3]}
+            userCSSTransforms={true}
             isDraggable={this.state.isDraggable}
             draggableHandle=".Grid_Drag_Handle"
             onLayoutChange={layout => {
@@ -513,7 +527,7 @@ class MyFirstGrid extends React.Component {
                 layout: JSON.parse(layout),
               });
             }}
-            draggableCancel="input, textarea ,button, .ant-modal-wrap, .ant-modal, .Modal_Base"
+            draggableCancel="input, textarea ,button, .ant-modal-wrap, .ant-modal, .Modal_Base, .Grid_Custom_Menu, .Grid_Menu"
           >
             {/*Regular Grids------------------------------------------*/}
             {this.state.gridRows}
