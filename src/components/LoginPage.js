@@ -26,21 +26,21 @@ class NormalLoginForm extends React.Component {
         <Form onSubmit={this.handleSubmit} className="login-form">
           <FormItem>
             {getFieldDecorator("email", {
-              rules: [{ required: true, message: "Please input your email!" }]
+              rules: [{ required: true, message: "Please input your email!" }],
             })(
               <Input
                 prefix={
                   <Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />
                 }
                 placeholder="E-mail"
-              />
+              />,
             )}
           </FormItem>
           <FormItem>
             {getFieldDecorator("password", {
               rules: [
-                { required: true, message: "Please input your Password!" }
-              ]
+                { required: true, message: "Please input your Password!" },
+              ],
             })(
               <Input
                 prefix={
@@ -48,13 +48,13 @@ class NormalLoginForm extends React.Component {
                 }
                 type="password"
                 placeholder="Password"
-              />
+              />,
             )}
           </FormItem>
           <FormItem>
             {getFieldDecorator("remember", {
               valuePropName: "checked",
-              initialValue: true
+              initialValue: true,
             })(<Checkbox>Remember me</Checkbox>)}
             <a className="login-form-forgot" href="">
               Forgot password
@@ -69,7 +69,6 @@ class NormalLoginForm extends React.Component {
             Or <a href="">register now!</a>
           </FormItem>
         </Form>
-        <LoginWithGoogle />
       </div>
     );
   }
@@ -82,7 +81,7 @@ class LoginPage extends Component {
     this.state = {
       email: "",
       password: "",
-      logout: "btn disabled"
+      logout: "btn disabled",
     };
     this.handleClick = this.handleClick.bind(this);
   }
@@ -92,12 +91,12 @@ class LoginPage extends Component {
     if (user) {
       this.setState({
         currentUser: user,
-        logout: "btn"
+        logout: "btn",
       });
     } else {
       this.setState({
         currentUser: null,
-        logout: "btn disabled"
+        logout: "btn disabled",
       });
     }
   }
@@ -109,7 +108,7 @@ class LoginPage extends Component {
         auth
           .signInWithEmailAndPassword(
             this.refs.email.value,
-            this.refs.password.value
+            this.refs.password.value,
           )
           .then(user => {
             console.log(user);
@@ -121,7 +120,7 @@ class LoginPage extends Component {
         auth
           .createUserWithEmailAndPassword(
             this.refs.email.value,
-            this.refs.password.value
+            this.refs.password.value,
           )
           .then(console.log("You have registered!"))
           .catch(err => console.log(err.message));
@@ -138,11 +137,11 @@ class LoginPage extends Component {
     auth.onAuthStateChanged(firebaseUser => {
       if (firebaseUser) {
         this.setState({
-          logout: "btn"
+          logout: "btn",
         });
       } else {
         this.setState({
-          logout: "btn disabled"
+          logout: "btn disabled",
         });
       }
     });
@@ -156,6 +155,14 @@ class LoginPage extends Component {
             <WrappedNormalLoginForm />
           </span>
         </div>
+        <Button
+          onClick={() => {
+            this.state;
+          }}
+        >
+          Show State
+        </Button>
+        <LoginWithGoogle />
       </div>
     );
   }
