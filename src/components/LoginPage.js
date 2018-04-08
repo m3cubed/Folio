@@ -12,10 +12,17 @@ const auth = firebase.auth();
 class NormalLoginForm extends React.Component {
   handleSubmit = e => {
     e.preventDefault();
-    console.log(e.value);
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        console.log("Received values of form: ", values);
+        firebase
+          .auth()
+          .signInWithEmailAndPassword(values.email, values.password)
+          .then(data => {
+            console.log(data);
+          })
+          .catch(err => {
+            console.log(err);
+          });
       }
     });
   };
@@ -87,18 +94,21 @@ class LoginPage extends Component {
   }
 
   componentWillMount() {
-    var user = firebase.auth().currentUser;
-    if (user) {
-      this.setState({
-        currentUser: user,
-        logout: "btn",
-      });
-    } else {
-      this.setState({
-        currentUser: null,
-        logout: "btn disabled",
-      });
-    }
+    var user = firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        this.setState({
+          currentUser: user,
+          email: user.email,
+          password: user.password,
+          logout: "btn",
+        });
+      } else {
+        this.setState({
+          currentUser: null,
+          logout: "btn disabled",
+        });
+      }
+    });
   }
 
   handleClick = e => {
@@ -161,6 +171,13 @@ class LoginPage extends Component {
           }}
         >
           Show State
+        </Button>
+        <Button
+          onClick={() => {
+            firebase.auth().signOut();
+          }}
+        >
+          Sign Out
         </Button>
         <LoginWithGoogle />
       </div>

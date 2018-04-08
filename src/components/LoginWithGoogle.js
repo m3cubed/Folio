@@ -3,13 +3,11 @@ import firebase from "firebase";
 import { base, config, GoogleProvider } from "./base";
 import { Button } from "antd";
 
-const auth = firebase.auth();
-
 class LoginWithGoogle extends React.Component {
   signinWithPopup = () => {
     firebase
       .auth()
-      .signInWithPopup(GoogleProvider)
+      .signInWithRedirect(GoogleProvider)
       .then(function(result) {
         // This gives you a Google Access Token. You can use it to access the Google API.
         var token = result.credential.accessToken;
@@ -26,6 +24,7 @@ class LoginWithGoogle extends React.Component {
         // The firebase.auth.AuthCredential type that was used.
         var credential = error.credential;
         // ...
+        console.log(error);
       });
   };
 
