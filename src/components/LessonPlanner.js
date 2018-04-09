@@ -363,27 +363,29 @@ class MyFirstGrid extends React.Component {
                 </span>
 
                 <div className="Grid_Menu">
-                  <button
-                    className="Grid_Button"
-                    onClick={e => {
-                      this.setState({ modalGridID: gridID });
-                      this.toggleModal();
-                    }}
-                  >
-                    <i className="fas fa-plus-circle fa-2x" />
-                    <br />
-                    Content
-                  </button>
-
-                  <hr className="Grid_Menu_Linebreak" />
-                  <button
-                    className="Grid_Button"
-                    onClick={this.removeGrid.bind(this, gridID)}
-                  >
-                    <i className="fas fa-times fa-2x" />
-                    <br />
-                    Delete
-                  </button>
+                  <span className="Grid_Button_Wrapper">
+                    <button
+                      className="Grid_Button"
+                      onClick={e => {
+                        this.setState({ modalGridID: gridID });
+                        this.toggleModal();
+                      }}
+                    >
+                      <i className="fas fa-plus-circle fa-2x" />
+                      <br />
+                      Content
+                    </button>
+                  </span>
+                  <span className="Grid_Button_Wrapper">
+                    <button
+                      className="Grid_Button"
+                      onClick={this.removeGrid.bind(this, gridID)}
+                    >
+                      <i className="fas fa-trash-alt fa-2x" />
+                      <br />
+                      Delete
+                    </button>
+                  </span>
                 </div>
               </div>
 
@@ -519,7 +521,7 @@ class MyFirstGrid extends React.Component {
             margin={[3, 3]}
             userCSSTransforms={true}
             isDraggable={this.state.isDraggable}
-            draggableHandle=".Grid_Drag_Handle"
+            draggableHandle=".Grid_Drag_Handle:hover"
             onLayoutChange={layout => {
               layout = JSON.stringify(layout);
               this.setState({
