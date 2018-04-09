@@ -27,6 +27,7 @@ class MyFirstGrid extends React.Component {
       rawData: {},
       headings: {},
       modalGridID: "",
+      showHeadings: {},
     };
     this.renderGrids = this.renderGrids.bind(this);
     this.handleModalContent = this.handleModalContent.bind(this);
@@ -52,11 +53,12 @@ class MyFirstGrid extends React.Component {
   gridNUMincrease = () => {
     const data = this.state.layout;
     data.push({
-      i: "N" + this.state.gridNUM,
+      i: this.createGridUID(),
       x: Infinity,
       y: Infinity,
-      w: 7,
-      h: 4,
+      w: 10,
+      h: 5,
+      minH: 5,
     });
     this.setState(
       {
@@ -157,6 +159,25 @@ class MyFirstGrid extends React.Component {
     );
   };
 
+  toggleHeading = gridID => {
+    console.log(this.state.showHeadings[gridID]);
+    const value = !this.state.showHeadings[gridID];
+    const show = Object.defineProperty(this.state.showHeadings, gridID, {
+      value: value,
+      writable: true,
+      enumerable: true,
+      configurable: true,
+    });
+    this.setState(
+      {
+        showHeadings: show,
+      },
+      function() {
+        this.renderGrids(this.state.layout);
+      },
+    );
+  };
+
   removeGrid = gridID => {
     const newLayout = this.state.layout.filter(
       item => item.i !== gridID.toString(),
@@ -190,7 +211,7 @@ class MyFirstGrid extends React.Component {
             static: true,
           });
           rows.push(
-            <div key={gridID}>
+            <div key={gridID} data-grid={layout[j]}>
               <div>
                 <textarea
                   className="LessonDate"
@@ -235,7 +256,7 @@ class MyFirstGrid extends React.Component {
             minH: 5,
           });
           rows.push(
-            <div className="Grid_Main" key={gridID}>
+            <div className="Grid_Main" key={gridID} data-grid={layout[j]}>
               <textarea
                 className="Grid_Header"
                 placeholder="Header"
@@ -264,6 +285,15 @@ class MyFirstGrid extends React.Component {
                 <div className="Grid_Menu">
                   <button
                     className="Grid_Button"
+                    onClick={this.removeGrid.bind(this, gridID)}
+                  >
+                    <i className="fas fa-heading fa-2x" />
+                    <br />
+                    Heading
+                  </button>
+
+                  <button
+                    className="Grid_Button"
                     onClick={e => {
                       this.setState({ modalGridID: gridID });
                       this.toggleModal();
@@ -274,7 +304,6 @@ class MyFirstGrid extends React.Component {
                     Content
                   </button>
 
-                  <hr className="Grid_Menu_Linebreak" />
                   <button
                     className="Grid_Button"
                     onClick={this.removeGrid.bind(this, gridID)}
@@ -292,12 +321,13 @@ class MyFirstGrid extends React.Component {
         }
       }
     } else {
+      layout = data;
       for (let j = 0; j < gridNUM; j++) {
         const gridID = data[j].i;
 
         if (j === 0) {
           rows.push(
-            <div key={data[j].i} data-grid={data[j]}>
+            <div key={data[j].i} data-grid={layout[j]}>
               <div>
                 <textarea
                   className="LessonDate"
@@ -331,15 +361,30 @@ class MyFirstGrid extends React.Component {
           );
         } else {
           const thisState = this.state;
-
+          //Grid Content
           const gridIDContent = `${gridID}Content`;
+          //Toggle Grid Headings
+          let gridHeading;
+          if (this.state.showHeadings[gridID] !== "" || undefined) {
+            gridHeading = this.state.showHeadings[gridID];
+          } else {
+            Object.defineProperty(this.state.showHeadings, gridID, {
+              value: true,
+              writable: true,
+              enumerable: true,
+              configurable: true,
+            });
+          }
+          const display = gridHeading ? "initial" : "none";
+          //Make rows
           rows.push(
-            <div className="Grid_Main" key={gridID} data-grid={data[j]}>
+            <div className="Grid_Main" key={gridID} data-grid={layout[j]}>
               <textarea
                 className="Grid_Header"
                 placeholder="Header"
                 id={gridID}
                 defaultValue={this.state.headings[gridID]}
+                style={{ display: display }}
                 onChange={e => {
                   const headings = Object.defineProperty(
                     this.state.headings,
@@ -363,29 +408,35 @@ class MyFirstGrid extends React.Component {
                 </span>
 
                 <div className="Grid_Menu">
-                  <span className="Grid_Button_Wrapper">
-                    <button
-                      className="Grid_Button"
-                      onClick={e => {
-                        this.setState({ modalGridID: gridID });
-                        this.toggleModal();
-                      }}
-                    >
-                      <i className="fas fa-plus-circle fa-2x" />
-                      <br />
-                      Content
-                    </button>
-                  </span>
-                  <span className="Grid_Button_Wrapper">
-                    <button
-                      className="Grid_Button"
-                      onClick={this.removeGrid.bind(this, gridID)}
-                    >
-                      <i className="fas fa-trash-alt fa-2x" />
-                      <br />
-                      Delete
-                    </button>
-                  </span>
+                  <button
+                    className="Grid_Button"
+                    onClick={this.toggleHeading.bind(this, gridID)}
+                  >
+                    <i className="fas fa-heading fa-2x" />
+                    <br />
+                    Heading
+                  </button>
+
+                  <button
+                    className="Grid_Button"
+                    onClick={e => {
+                      this.setState({ modalGridID: gridID });
+                      this.toggleModal();
+                    }}
+                  >
+                    <i className="fas fa-plus-circle fa-2x" />
+                    <br />
+                    Content
+                  </button>
+
+                  <button
+                    className="Grid_Button"
+                    onClick={this.removeGrid.bind(this, gridID)}
+                  >
+                    <i className="fas fa-trash-alt fa-2x" />
+                    <br />
+                    Delete
+                  </button>
                 </div>
               </div>
 
@@ -424,6 +475,11 @@ class MyFirstGrid extends React.Component {
             if (data.headings) {
               this.setState({
                 headings: data.headings,
+              });
+            }
+            if (data.showHeadings) {
+              this.setState({
+                showHeadings: data.showHeadings,
               });
             }
             if (data.layoutChange) {
@@ -495,6 +551,7 @@ class MyFirstGrid extends React.Component {
         lessonDate: this.state.lessonDate,
         lessonTitle: this.state.lessonTitle,
         headings: this.state.headings,
+        showHeadings: this.state.showHeadings,
       },
     );
   }
@@ -516,7 +573,6 @@ class MyFirstGrid extends React.Component {
             cols={24}
             rowHeight={20}
             width={1103}
-            layout={this.state.layout}
             containerPadding={[0, 0]}
             margin={[3, 3]}
             userCSSTransforms={true}

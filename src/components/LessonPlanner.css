@@ -179,11 +179,12 @@
   right: 0px;
   left: 0px;
   margin: 0px auto;
-  top: 0px;
-  width: 210px;
+  top: 20px;
+  width: 195px;
   height: 60px;
   text-align: center;
   background-color: #001529a8;
+
   transition: all 300ms ease;
   cursor: default;
 }
@@ -226,7 +227,6 @@
   cursor: move;
   transition: all 300ms ease;
   text-align: center;
-  padding-right: 5px;
   width: 100px;
   top: 0px;
   left: 0px;
@@ -244,6 +244,7 @@
 }
 
 .Grid_Drag_Handle:hover:hover .Grid_Custom_Menu {
+  transition-delay: 300ms;
   opacity: 1;
   visibility: visible;
 }
@@ -269,6 +270,7 @@
 .Grid_Custom_Menu:hover ~ .Grid_Menu {
   visibility: visible;
   opacity: 1;
+  transition-delay: 700ms;
 }
 
 .Grid_Button {
@@ -277,6 +279,9 @@
   border: 0px transparent;
   margin: 0px auto;
   font-size: 12px;
+  width: 65px;
+  height: 65px;
+  border: 1px solid white;
 }
 
 .Grid_Button:hover {
