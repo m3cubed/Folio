@@ -202,7 +202,10 @@ class Home extends Component {
                 unit = unit.toLowerCase();
                 unit = unit.replace(/\b\w/g, l => l.toUpperCase());
                 unit = unit.replace(/\W\s/, " - ");
-                this.setState({ inputUnit: e.target.value });
+                console.log(e.target.value)
+                this.setState({ inputUnit: unit },function(){
+                  console.log(this.state.inputUnit)
+                });
               }}
             />
           </div>
