@@ -10,7 +10,7 @@ class GridModal extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     return {
       gridID: nextProps.gridID,
-      visible: nextProps.showModal,
+      visible: nextProps.showModal
     };
   }
   constructor(props) {
@@ -18,7 +18,7 @@ class GridModal extends React.Component {
     this.state = {
       gridID: "",
       visible: false,
-      modalKey: "Curriculum",
+      modalKey: "Curriculum"
     };
   }
 
@@ -27,17 +27,17 @@ class GridModal extends React.Component {
     this.props.handleGridData(
       this.state.modalContent,
       this.props.gridID,
-      this.state.modalKey,
+      this.state.modalKey
     );
     this.props.toggleModal();
     this.setState({
-      visible: false,
+      visible: false
     });
   };
 
   modalContentToState = content => {
     this.setState({
-      modalContent: content,
+      modalContent: content
     });
   };
 
@@ -68,14 +68,14 @@ class GridModal extends React.Component {
               onClick={this.backToGrid.bind(this)}
             >
               Submit
-            </Button>,
+            </Button>
           ]}
         >
           <Tabs
             defaultActiveKey="Curriculum"
             onChange={key => {
               this.setState({
-                modalKey: key,
+                modalKey: key
               });
             }}
           >
@@ -85,7 +85,7 @@ class GridModal extends React.Component {
               />
             </TabPane>
             <TabPane tab="Insert Text" key="Text">
-              <TextDraft />
+              <TextDraft backToModal={this.modalContentToState.bind(this)} />
             </TabPane>
             <TabPane tab="Check List" key="Checklist">
               <CheckList backToModal={this.modalContentToState.bind(this)} />

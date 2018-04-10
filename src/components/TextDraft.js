@@ -6,14 +6,26 @@ import htmlToDraft from "html-to-draftjs";
 import "./TextDraft.css";
 
 class TextDraft extends Component {
-  state = {
-    editorState: EditorState.createEmpty()
-  };
+  constructor(props) {
+    super(props);
+    const html = "";
+    const contentBlock = htmlToDraft(html);
+    if (contentBlock) {
+      const contentState = ContentState.createFromBlockArray(
+        contentBlock.contentBlocks
+      );
+      const editorState = EditorState.createWithContent(contentState);
+      this.state = {
+        editorState
+      };
+    }
+  }
 
   onEditorStateChange = editorState => {
     this.setState({
       editorState
     });
+    this.props.backToModal(convertToRaw(editorState.getCurrentContent()));
   };
 
   render() {
@@ -24,12 +36,13 @@ class TextDraft extends Component {
           editorState={editorState}
           wrapperClassName="draft-wrapper"
           editorClassName="draft-editor"
+          toolbarClassName="draft-toolbar"
           onEditorStateChange={this.onEditorStateChange}
         />
-        <textarea
+        {/*<textarea
           disabled
           value={draftToHtml(convertToRaw(editorState.getCurrentContent()))}
-        />
+    />*/}
       </div>
     );
   }

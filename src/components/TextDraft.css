@@ -1,7 +1,9 @@
 .draft-editor {
-  height: 400px;
+  min-height: 200px;
 }
 
 .draft-wrapper {
-  height: 400px;
+  min-height: 100px;
+  margin-bottom: 20px;
+  height: 100%;
 }
