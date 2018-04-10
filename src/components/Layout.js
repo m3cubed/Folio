@@ -58,6 +58,9 @@ class LessonPlanLayout extends React.Component {
             </Menu.Item>
           </Menu>
           <Route exact path="/lessonplan/:id" component={LessonPlanner} />
+          <Footer className="Lesson_Plan_Footer">
+            Folio-Planner ©2018 Created by Michael Ma
+          </Footer>
         </Layout>
       </div>
     );

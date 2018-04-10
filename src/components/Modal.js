@@ -1,8 +1,7 @@
 import React from "react";
-
 import { Button, Modal, Tabs } from "antd";
 import CourseSelector from "./CourseSelector.js";
-
+import ProgressAgenda from "./ProgressAgenda.js";
 import TextDraft from "./TextDraft";
 import CheckList from "./CheckList.js";
 
@@ -57,6 +56,7 @@ class GridModal extends React.Component {
             <Button
               key="back"
               onClick={() => {
+                this.props.toggleModal();
                 this.setState({ visible: false });
               }}
             >
@@ -89,6 +89,11 @@ class GridModal extends React.Component {
             </TabPane>
             <TabPane tab="Check List" key="Checklist">
               <CheckList backToModal={this.modalContentToState.bind(this)} />
+            </TabPane>
+            <TabPane tab="Agenda" key="Agenda">
+              <ProgressAgenda
+                backToModal={this.modalContentToState.bind(this)}
+              />
             </TabPane>
           </Tabs>
         </Modal>

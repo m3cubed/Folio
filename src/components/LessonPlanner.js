@@ -23,11 +23,13 @@ class MyFirstGrid extends React.Component {
       gridNUM: 4,
       addGrid: false,
       isDraggable: true,
+      isResizable: true,
       layout: [],
       rawData: {},
       headings: {},
       modalGridID: "",
       showHeadings: {},
+      viewOnly: false,
     };
     this.renderGrids = this.renderGrids.bind(this);
     this.handleModalContent = this.handleModalContent.bind(this);
@@ -280,11 +282,16 @@ class MyFirstGrid extends React.Component {
               />
               <div className="Grid_Drag_Handle">
                 <span className="Grid_Custom_Menu">
-                  <i className="fas fa-cog" />
+                  <i className="fas fa-caret-down" />
                 </span>
                 <div className="Grid_Menu">
                   <button
                     className="Grid_Button"
+                    style={{
+                      backgroundColor: this.state.showHeadings[gridID]
+                        ? "#0c69ce8c"
+                        : "transparent",
+                    }}
                     onClick={this.removeGrid.bind(this, gridID)}
                   >
                     <i className="fas fa-heading fa-2x" />
@@ -404,11 +411,16 @@ class MyFirstGrid extends React.Component {
 
               <div className="Grid_Drag_Handle">
                 <span className="Grid_Custom_Menu">
-                  <i className="fas fa-cog" />
+                  <i className="fas fa-caret-down" />
                 </span>
 
                 <div className="Grid_Menu">
                   <button
+                    style={{
+                      backgroundColor: this.state.showHeadings[gridID]
+                        ? "#0c69ce8c"
+                        : "transparent",
+                    }}
                     className="Grid_Button"
                     onClick={this.toggleHeading.bind(this, gridID)}
                   >
@@ -577,6 +589,7 @@ class MyFirstGrid extends React.Component {
             margin={[3, 3]}
             userCSSTransforms={true}
             isDraggable={this.state.isDraggable}
+            isResizable={this.state.isResizable}
             draggableHandle=".Grid_Drag_Handle:hover"
             onLayoutChange={layout => {
               layout = JSON.stringify(layout);
@@ -605,8 +618,18 @@ class MyFirstGrid extends React.Component {
               <span className="Add_Grid_Wrapper">
                 <button
                   className="Add_Grid_Button"
+                  style={{
+                    backgroundColor: this.state.viewOnly
+                      ? "#497fd0"
+                      : "transparent",
+                    color: this.state.viewOnly ? "white" : "inherit",
+                  }}
                   onClick={() =>
-                    this.setState({ isDraggable: !this.state.isDraggable })
+                    this.setState({
+                      viewOnly: !this.state.viewOnly,
+                      isDraggable: !this.state.isDraggable,
+                      isResizable: !this.state.isResizable,
+                    })
                   }
                 >
                   <i className="fas fa-eye fa-2x" />

@@ -1,5 +1,5 @@
 import React from "react";
-import { Menu, Dropdown, Icon, List, Checkbox, Row, Col } from "antd";
+import { Menu, Dropdown, Icon, List, Checkbox, Row, Col, Spin } from "antd";
 import { store } from "./base";
 import "./CourseSelector.css";
 
@@ -18,6 +18,7 @@ class CourseSelector extends React.Component {
       unitVisible: true,
       unitMenu: "",
       overall: "",
+      loading: false,
     };
   }
 
@@ -105,79 +106,107 @@ class CourseSelector extends React.Component {
 
   getOutlines = e => {
     const key = e.key;
-    store
-      .get(
-        `/Curriculum/Ontario/High School/${this.state.grade}/${
-          this.state.subject
-        }/${this.state.course}/${key}/Overall Expectations`,
-        {
-          context: this,
-        },
-      )
-      .then(data => {
-        this.setState({
-          unit: key,
-        });
-        const overallExpecations = [];
-        overallExpecations.push(<h2 key="Overall">Overall Expectations</h2>);
-        for (let i = 0; i < data.key.length; i++) {
-          overallExpecations.push(
-            <div key={data.key[i]}>
-              <h3>
-                <strong>{data.key[i]}</strong>
-              </h3>
-              <p>{data.description[i]}</p>
-            </div>,
-          );
-        }
-        this.setState({
-          overallExpecatations: overallExpecations,
-        });
-      });
-    store
-      .get(
-        `/Curriculum/Ontario/High School/${this.state.grade}/${
-          this.state.subject
-        }/${this.state.course}/${key}/Specific Expectations`,
-        { context: this },
-      )
-      .then(data => {
-        //Render list and checkbox
-        const specific = [];
-        for (let i = 0; i < data.key.length; i++) {
-          specific.push(
-            <List.Item key={data.key[i]}>
-              <List.Item.Meta
-                title={
-                  <div>
-                    <Checkbox value={data.key[i]} style={{ marginRight: 3 }} />
-                    <strong>{data.key[i]}.</strong>
-                  </div>
-                }
-                description={data.description[i]}
-              />
-            </List.Item>,
-          );
-        }
-        const specificComplete = (
-          <div>
-            <h2>Specific Expectations</h2>
-            <div className="Curriculum_Specific_List">
-              <List itemLayout="horizontal">
-                <Checkbox.Group onChange={this.handleCheckbox}>
-                  {specific}
-                </Checkbox.Group>
-              </List>
-            </div>
+    this.setState(
+      {
+        loading: true,
+      },
+      function() {
+        store
+          .get(
+            `/Curriculum/Ontario/High School/${this.state.grade}/${
+              this.state.subject
+            }/${this.state.course}/${key}/Overall Expectations`,
+            {
+              context: this,
+            },
+          )
+          .then(data => {
+            this.setState({
+              unit: key,
+            });
+            const overallExpecations = [];
+            overallExpecations.push(
+              <h2 key="Overall">Overall Expectations</h2>,
+            );
+            for (let i = 0; i < data.key.length; i++) {
+              overallExpecations.push(
+                <div key={data.key[i]}>
+                  <h3>
+                    <strong>{data.key[i]}</strong>
+                  </h3>
+                  <p>{data.description[i]}</p>
+                </div>,
+              );
+            }
+            this.setState({
+              overallExpecatations: overallExpecations,
+            });
+          });
+        store
+          .get(
+            `/Curriculum/Ontario/High School/${this.state.grade}/${
+              this.state.subject
+            }/${this.state.course}/${key}/Specific Expectations`,
+            { context: this },
+          )
+          .then(data => {
+            //Render list and checkbox
+            const specific = [];
+            for (let i = 0; i < data.key.length; i++) {
+              specific.push(
+                <List.Item key={data.key[i]}>
+                  <List.Item.Meta
+                    title={
+                      <div>
+                        <Checkbox
+                          value={data.key[i]}
+                          style={{ marginRight: 3 }}
+                        />
+                        <strong>{data.key[i]}.</strong>
+                      </div>
+                    }
+                    description={data.description[i]}
+                  />
+                </List.Item>,
+              );
+            }
+            const specificComplete = (
+              <div>
+                <h2>Specific Expectations</h2>
+                <div className="Curriculum_Specific_List">
+                  <List itemLayout="horizontal">
+                    <Checkbox.Group onChange={this.handleCheckbox}>
+                      {specific}
+                    </Checkbox.Group>
+                  </List>
+                </div>
+              </div>
+            );
+
+            this.setState({
+              loading: false,
+              specificExpectations: specificComplete,
+              dataKey: data.key,
+              dataDescription: data.description,
+            });
+          });
+      },
+    );
+  };
+
+  renderSpin = () => {
+    switch (this.state.loading) {
+      case true:
+        return (
+          <div className="Loading_Spin">
+            <Spin size="large" />
           </div>
         );
-
-        this.setState({
-          specificExpectations: specificComplete,
-          dataKey: data.key,
-          dataDescription: data.description,
-        });
-      });
+      case false:
+        return null;
+      default:
+        return null;
+    }
   };
 
   //Create list of curriculum to send back to modal
@@ -269,7 +298,8 @@ class CourseSelector extends React.Component {
           </Dropdown>
         </span>
         <hr />
-        <Row>
+        {this.renderSpin(this.state.loading)}
+        <Row gutter={24}>
           <Col span={12}>
             <div className="Courseselect_Overall">
               {this.state.overallExpecatations}
