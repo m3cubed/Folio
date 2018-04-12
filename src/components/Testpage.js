@@ -67,6 +67,17 @@ class Testpage extends Component {
               );
               listUnits.push(this.state.inputUnit);
               listUnits.sort();
+              console.log(listUnits);
+              Object.defineProperty(fromChoices, this.state.inputGrade, {
+                value: {
+                  [this.state.inputSubject]: {
+                    [this.state.inputCourse]: listUnits,
+                  },
+                },
+                writable: true,
+                configurable: true,
+                enumerable: true,
+              });
             } else {
               //if course doesn't exist
               Object.defineProperty(listCourses, this.state.inputCourse, {
@@ -101,6 +112,7 @@ class Testpage extends Component {
         this.setState({
           syncstate: fromChoices,
         });
+        console.log(this.state.syncstate);
       })
       .catch(err => console.log(err));
   };
@@ -199,8 +211,8 @@ class Testpage extends Component {
                 unit = unit.replace(/\b\w/g, l => l.toUpperCase());
                 unit = unit.replace(/\W\s/, " - ");
                 console.log(e.target.value);
+                console.log(unit);
                 this.setState({ inputUnit: unit });
-                console.log(this.state.inputUnit);
               }}
             />
           </div>
@@ -251,8 +263,47 @@ class Testpage extends Component {
             onChange={e => {
               let value = e.target.value.replace(
                 /\bBy the end of this course, students will:\n*/,
-                " ",
+                "\n",
               );
+              value = value.replace(
+                /\bPerforming and Recording \[PR\]\**/,
+                "\n",
+              );
+              value = value.replace(
+                /\bAnalysing and Interpreting \[AI\]\**/,
+                "\n",
+              );
+              value = value.replace(/\bCommunicating \[C\]\**/, "\n");
+              value = value.replace(
+                /\bThroughout this course, students will\:*/,
+                "\n",
+              );
+              if (this.state.inputType === "Specific Expectations") {
+                console.log("specific");
+                let newValue = value.replace(/\S*\.\t[\s\S]*?\n/, "");
+                while (newValue !== value) {
+                  value = newValue;
+                  newValue = newValue.replace(/\S*\.\t[\s\S]*?\n/, "\n");
+                  newValue = newValue.replace(
+                    /\bSample issue\:[\s\S]*?\n/,
+                    "\n",
+                  );
+                  newValue = newValue.replace(
+                    /\bSample questions\:[\s\S]*?\n/,
+                    "\n",
+                  );
+                  newValue = newValue.replace(
+                    /\bSample problem\:[\s\S]*?\n/,
+                    "\n",
+                  );
+                  newValue = newValue.replace(
+                    /\bBy the end of this course, students will:\n*/,
+                    "\n",
+                  );
+                }
+                value = newValue;
+              }
+
               value = value.split(/\s{2,}|\n\n|\t/);
               let key = [];
               let description = [];

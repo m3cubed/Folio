@@ -5,6 +5,7 @@ import { Route, Link } from "react-router-dom";
 import { Layout, Menu } from "antd";
 import LessonPlanner from "./LessonPlanner";
 import "./Layout.css";
+import firebase from "firebase";
 
 const { Header, Content, Footer } = Layout;
 
@@ -13,6 +14,7 @@ class MainLayout extends React.Component {
     super();
     this.state = {
       user: "",
+      isOwner: "none",
     };
   }
 
@@ -46,10 +48,27 @@ class MainLayout extends React.Component {
 }
 
 class LessonPlanLayout extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      isOwner: "auto",
+    };
+  }
+
+  /*componentDidMount() {
+    console.log(this.props.match.params.id);
+    firebase.auth().onAuthStateChanged(user => {
+      this.setState({ userUID: user.uid });
+    });
+  }*/
+
   render() {
     return (
       <div>
-        <Layout className="Lesson_Plan_Page">
+        <Layout
+          className="Lesson_Plan_Page"
+          style={{ pointerEvents: this.state.isOwner }}
+        >
           <Menu theme="dark" mode="horizontal" className="Lesson_Page_TopMenu">
             <Menu.Item key="back">
               <Link to="/LessonPlanList">

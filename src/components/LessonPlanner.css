@@ -258,6 +258,7 @@
   color: white;
   right: 0px;
   left: 0px;
+  width: 30px;
   transition: all 300ms ease;
   cursor: default;
   z-index: 100;
