@@ -57,6 +57,14 @@ class NavbarHeader extends Component {
   }
 
   render() {
+    const isAdmin = [];
+    if (this.state.currentUserEmail === "mike.ma0426@gmail.com") {
+      isAdmin.push(
+        <Menu.Item key="home" href="/">
+          <Link to="/testpage">Test Page</Link>
+        </Menu.Item>,
+      );
+    }
     return (
       <div>
         <Menu
@@ -74,9 +82,7 @@ class NavbarHeader extends Component {
           }}
         >
           {this.userOrNot(this.state.authenticated)}
-          <Menu.Item key="home" href="/">
-            <Link to="/">Test Page</Link>
-          </Menu.Item>
+          {isAdmin}
 
           <Menu.Item key="LessonPlanList">
             <Link to="/LessonPlanList">Lesson Plans</Link>

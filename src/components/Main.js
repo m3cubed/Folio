@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import { Switch, Route } from "react-router-dom";
 import LoginPage from "./LoginPage.js";
-import Home from "./Home";
+import Testpage from "./Testpage";
 import AddLessonPlan from "./AddLessonPlan";
 import { app } from "./base";
+import Home from "./Home";
 
 class Main extends Component {
   constructor() {
@@ -57,6 +58,7 @@ class Main extends Component {
       <main>
         <Switch>
           <Route exact path="/" component={Home} />
+          <Route exact path="/testpage" component={Testpage} />
           <Route
             exact
             path="/login"
