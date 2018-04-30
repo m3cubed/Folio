@@ -23,7 +23,8 @@ class AddLessonPlan extends Component {
     this.openFolder = this.openFolder.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
+    document.title = "Lesson Plan List";
     //Call Firestore for user lessons
 
     this.removeAuthListener = firebase.auth().onAuthStateChanged(user => {

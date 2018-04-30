@@ -499,6 +499,8 @@ class MyFirstGrid extends React.Component {
   };
 
   componentDidMount() {
+    document.title = "Amazing Page";
+
     this.removeAuthListener = firebase.auth().onAuthStateChanged(user => {
       if (user) {
         this.setState({
