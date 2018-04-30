@@ -16,7 +16,7 @@ class AddLessonPlan extends Component {
     this.state = {
       currentUserUID: "",
       visible: false,
-      lessons: {},
+      lessons: {}
     };
     this.lessonsList = this.lessonsList.bind(this);
     this.foldersList = this.foldersList.bind(this);
@@ -30,35 +30,46 @@ class AddLessonPlan extends Component {
     this.removeAuthListener = firebase.auth().onAuthStateChanged(user => {
       if (user) {
         this.setState({
-          currentUserUID: user.uid,
+          currentUserUID: user.uid
         });
         store.listenToCollection(`users/${user.uid}/lessons`, {
           context: this,
           withIds: true,
           then(data) {
             this.setState({
-              lessons: data,
+              lessons: data
             });
-          },
+          }
         });
         store.listenToCollection(`users/${user.uid}/folders`, {
           context: this,
           withIds: true,
           then(data) {
             this.setState({
-              folders: data,
+              folders: data
             });
-          },
+          }
         });
         store.syncDoc(`users/${user.uid}/paths/Main`, {
           context: this,
-          state: "paths",
+          state: "paths"
         });
         store.listenToDoc(`users/${user.uid}/paths/Main`, {
           context: this,
           then(data) {
+            if (Object.keys(data).length === 0) {
+              console.log(data);
+              store.addToCollection(
+                `users/${user.uid}/paths`,
+                { Lessons: [], Folders: {} },
+                "Main"
+              );
+            }
             this.setState({ viewPaths: data });
           },
+          onFailure(err) {
+            console.log(err);
+          }
         });
       } else {
         return null;
@@ -67,107 +78,119 @@ class AddLessonPlan extends Component {
   }
 
   lessonsList = values => {
-    const result = [];
-    values.map(value => {
-      let lesson;
-      for (let i in this.state.lessons) {
-        if (this.state.lessons[i].id === value) {
-          lesson = this.state.lessons[i];
+    if (values !== undefined) {
+      const result = [];
+      values.map(value => {
+        let lesson;
+        for (let i in this.state.lessons) {
+          if (this.state.lessons[i].id === value) {
+            lesson = this.state.lessons[i];
+          }
         }
-      }
-      result.push({
-        key: lesson.id,
-        Title: lesson.lessonTitle,
-        Date: lesson.date,
-        type: lesson.type,
+        result.push({
+          key: lesson.id,
+          Title: lesson.lessonTitle,
+          Date: lesson.date,
+          type: lesson.type
+        });
       });
-    });
-    return result;
+      return result;
+    } else {
+      return "";
+    }
   };
 
   foldersList = values => {
     const result = [];
-    Object.keys(values).map(value => {
-      let children = [];
-      if (values[value]["Lessons"][0] !== undefined) {
-        children = children.concat(this.lessonsList(values[value]["Lessons"]));
-      }
-      let folder;
-      for (let i in this.state.folders) {
-        if (this.state.folders[i].id === value) {
-          folder = this.state.folders[i];
+    if (values !== undefined) {
+      Object.keys(values).map(value => {
+        let children = [];
+        if (values[value]["Lessons"][0] !== undefined) {
+          children = children.concat(
+            this.lessonsList(values[value]["Lessons"])
+          );
         }
-      }
-      result.push({
-        key: folder.id,
-        Title: folder.folderTitle,
-        Date: /*`${folder.month} ${folder.day}, ${folder.year}`*/ "-",
-        type: folder.type,
-        child: [{ key: 2, Title: "hey", Date: "-", type: "folder" }],
+        let folder;
+        for (let i in this.state.folders) {
+          if (this.state.folders[i].id === value) {
+            folder = this.state.folders[i];
+          }
+        }
+        result.push({
+          key: folder.id,
+          Title: folder.folderTitle,
+          Date: /*`${folder.month} ${folder.day}, ${folder.year}`*/ "-",
+          type: folder.type,
+          child: [{ key: 2, Title: "hey", Date: "-", type: "folder" }]
+        });
       });
-    });
-    return result;
+      return result;
+    } else {
+      return null;
+    }
   };
 
   openFolder = id => {
     if (id) {
       this.setState({
-        paths: this.state.viewPaths["Folders"][id],
+        paths: this.state.viewPaths["Folders"][id]
       });
     }
   };
 
   renderList(paths) {
     if (paths) {
-      let dataSource = [];
-      dataSource = dataSource.concat(this.foldersList(paths["Folders"]));
-      dataSource = dataSource.concat(this.lessonsList(paths["Lessons"]));
-      const columns = [
-        {
-          title: "Name",
-          dataIndex: "Title",
-          key: "Title",
-          //Render button and find record for cell
-          render: (text, record) => {
-            switch (record.type) {
-              case "lesson":
-                return (
-                  <LessonFiles
-                    id={record.key}
-                    text={text}
-                    uid={this.state.currentUserUID}
-                  />
-                );
-              case "folder":
-                return (
-                  <Folders
-                    openFolder={this.openFolder}
-                    text={text}
-                    id={record.key}
-                  />
-                );
-              default:
-                return null;
+      if (Object.keys(paths).length !== 0) {
+        let dataSource = [];
+        dataSource = dataSource.concat(this.foldersList(paths["Folders"]));
+        dataSource = dataSource.concat(this.lessonsList(paths["Lessons"]));
+        const columns = [
+          {
+            title: "Name",
+            dataIndex: "Title",
+            key: "Title",
+            //Render button and find record for cell
+            render: (text, record) => {
+              switch (record.type) {
+                case "lesson":
+                  return (
+                    <LessonFiles
+                      id={record.key}
+                      text={text}
+                      uid={this.state.currentUserUID}
+                    />
+                  );
+                case "folder":
+                  return (
+                    <Folders
+                      openFolder={this.openFolder}
+                      text={text}
+                      id={record.key}
+                    />
+                  );
+                default:
+                  return null;
+              }
             }
           },
-        },
-        {
-          title: "Lesson Date",
-          dataIndex: "Date",
-          key: "Date",
-          width: "30%",
-        },
-      ];
-      return (
-        <div>
-          <Table
-            expandRowByClick={true}
-            rowClassName="Table_Row"
-            dataSource={dataSource}
-            columns={columns}
-          />
-        </div>
-      );
+          {
+            title: "Lesson Date",
+            dataIndex: "Date",
+            key: "Date",
+            width: "30%"
+          }
+        ];
+        return (
+          <div>
+            <Table
+              expandRowByClick={true}
+              rowClassName="Table_Row"
+              dataSource={dataSource}
+              columns={columns}
+            />
+          </div>
+        );
+      }
     }
   }
 
@@ -186,11 +209,10 @@ class AddLessonPlan extends Component {
       month + " " + nowDate.getDate() + ", " + nowDate.getFullYear();
     let data;
     switch (type) {
-      case "Lesson":
+      case "Lesson": {
         this.setState({
-          visible: false,
+          visible: false
         });
-
         data = {
           author_id: this.state.currentUserUID,
           lessonTitle: this.state.lessonTitle,
@@ -199,7 +221,7 @@ class AddLessonPlan extends Component {
           year: nowDate.getFullYear(),
           month: month,
           day: nowDate.getDate(),
-          type: "lesson",
+          type: "lesson"
         };
 
         //API call
@@ -209,17 +231,19 @@ class AddLessonPlan extends Component {
             this.setState(
               update(this.state, {
                 paths: {
-                  Lessons: { $push: [data.id] },
-                },
-              }),
+                  Lessons: { $push: [data.id] }
+                }
+              })
             );
           })
           .catch(err => {
             //handle error
           });
-      case "Folder":
+        break;
+      }
+      case "Folder": {
         this.setState({
-          visible: false,
+          visible: false
         });
 
         data = {
@@ -230,7 +254,7 @@ class AddLessonPlan extends Component {
           year: nowDate.getFullYear(),
           month: month,
           day: nowDate.getDate(),
-          type: "folder",
+          type: "folder"
         };
 
         //API call
@@ -241,18 +265,23 @@ class AddLessonPlan extends Component {
               update(this.state, {
                 paths: {
                   Folders: {
-                    $merge: { [data.id]: { Folders: {}, Lessons: [] } },
-                  },
-                },
-              }),
+                    $merge: { [data.id]: { Folders: {}, Lessons: [] } }
+                  }
+                }
+              })
             );
           })
           .catch(err => {
             //handle error
           });
+        break;
+      }
       default:
         return null;
     }
+    this.setState({
+      lessonTitle: ""
+    });
   };
 
   render() {
@@ -266,13 +295,13 @@ class AddLessonPlan extends Component {
         >
           Add a lesson plan
         </Button>
-        <Button
+        {/*<Button
           style={{ marginLeft: "20px" }}
           type="primary"
           onClick={() => this.setState({ visible: true, type: "Folder" })}
         >
           Add a folder
-        </Button>
+        </Button>*/}
         <Modal
           title={`Create a ${this.state.type}`}
           visible={this.state.visible}
@@ -290,13 +319,14 @@ class AddLessonPlan extends Component {
               onClick={this.handleAdd.bind(this, this.state.type)}
             >
               Create
-            </Button>,
+            </Button>
           ]}
         >
           <Input
             placeholder="Input title"
+            value={this.state.lessonTitle}
             onChange={e => this.setState({ lessonTitle: e.target.value })}
-            onPressEnter={this.lessonAdd}
+            onPressEnter={this.handleAdd.bind(this, this.state.type)}
           />
         </Modal>
       </div>
