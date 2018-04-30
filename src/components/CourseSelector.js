@@ -22,7 +22,7 @@ class CourseSelector extends React.Component {
       overallExpecatations: "",
       specificExpectations: "",
       dataKey: "",
-      dataDescription: "",
+      dataDescription: ""
     };
   }
 
@@ -35,11 +35,11 @@ class CourseSelector extends React.Component {
             <strong>{data.key}</strong>
           </h5>
           <p>{data.description}</p>
-        </div>,
+        </div>
       );
     }
     this.setState({
-      overallExpecations: overallExpecations,
+      overallExpecations: overallExpecations
     });
     console.log(this.state.overallExpecations);
     console.log(overallExpecations);
@@ -51,7 +51,7 @@ class CourseSelector extends React.Component {
     const subjectsMenu = [];
     for (let i = 0; i < subjectsKey.length; i++) {
       subjectsMenu.push(
-        <Menu.Item key={subjectsKey[i]}>{subjectsKey[i]}</Menu.Item>,
+        <Menu.Item key={subjectsKey[i]}>{subjectsKey[i]}</Menu.Item>
       );
     }
     this.setState({
@@ -64,19 +64,19 @@ class CourseSelector extends React.Component {
       courseVisible: true,
       courseMenu: "",
       unitVisible: true,
-      unitMenu: "",
+      unitMenu: ""
     });
   };
 
   getCourses = e => {
     const key = e.key;
     const coursesKey = Object.keys(
-      this.state.curriculumChoices[this.state.grade][key],
+      this.state.curriculumChoices[this.state.grade][key]
     );
     const coursesMenu = [];
     for (let i = 0; i < coursesKey.length; i++) {
       coursesMenu.push(
-        <Menu.Item key={coursesKey[i]}>{coursesKey[i]}</Menu.Item>,
+        <Menu.Item key={coursesKey[i]}>{coursesKey[i]}</Menu.Item>
       );
     }
     this.setState({
@@ -86,7 +86,7 @@ class CourseSelector extends React.Component {
       courseVisible: false,
       courseMenu: coursesMenu,
       unitVisible: true,
-      unitMenu: "",
+      unitMenu: ""
     });
   };
 
@@ -104,7 +104,7 @@ class CourseSelector extends React.Component {
       course: key,
       unit: "Choose Unit",
       unitVisible: false,
-      unitMenu: unitsMenu,
+      unitMenu: unitsMenu
     });
   };
 
@@ -116,7 +116,7 @@ class CourseSelector extends React.Component {
         overallExpecatations: "",
         specificExpectations: "",
         dataKey: "",
-        dataDescription: "",
+        dataDescription: ""
       },
       function() {
         store
@@ -125,16 +125,16 @@ class CourseSelector extends React.Component {
               this.state.subject
             }/${this.state.course}/${key}/Overall Expectations`,
             {
-              context: this,
-            },
+              context: this
+            }
           )
           .then(data => {
             this.setState({
-              unit: key,
+              unit: key
             });
             const overallExpecations = [];
             overallExpecations.push(
-              <h2 key="Overall">Overall Expectations</h2>,
+              <h2 key="Overall">Overall Expectations</h2>
             );
             for (let i = 0; i < data.key.length; i++) {
               overallExpecations.push(
@@ -143,11 +143,11 @@ class CourseSelector extends React.Component {
                     <strong>{data.key[i]}</strong>
                   </h3>
                   <p>{data.description[i]}</p>
-                </div>,
+                </div>
               );
             }
             this.setState({
-              overallExpecatations: overallExpecations,
+              overallExpecatations: overallExpecations
             });
           });
         store
@@ -155,7 +155,7 @@ class CourseSelector extends React.Component {
             `/Curriculum/Ontario/High School/${this.state.grade}/${
               this.state.subject
             }/${this.state.course}/${key}/Specific Expectations`,
-            { context: this },
+            { context: this }
           )
           .then(data => {
             //Render list and checkbox
@@ -175,7 +175,7 @@ class CourseSelector extends React.Component {
                     }
                     description={data.description[i]}
                   />
-                </List.Item>,
+                </List.Item>
               );
             }
             const specificComplete = (
@@ -195,10 +195,10 @@ class CourseSelector extends React.Component {
               loading: false,
               specificExpectations: specificComplete,
               dataKey: data.key,
-              dataDescription: data.description,
+              dataDescription: data.description
             });
           });
-      },
+      }
     );
   };
 
@@ -227,14 +227,19 @@ class CourseSelector extends React.Component {
       keys.push(this.state.dataKey[position[i]]);
       descriptions.push(this.state.dataDescription[position[i]]);
     }
-    const backToModal = [keys, descriptions];
+    const backToModal = {
+      keys: keys,
+      description: descriptions,
+      course: this.state.course,
+      unit: this.state.unit
+    };
     this.props.backToModal(backToModal);
   };
 
   componentWillMount() {
     store
       .get(`/Curriculum/Ontario/High School/Choices`, {
-        context: this,
+        context: this
       })
       .then(data => {
         console.log(data);
@@ -242,15 +247,15 @@ class CourseSelector extends React.Component {
         const gradesMenu = [];
         for (let i = 0; i < gradesKey.length; i++) {
           gradesMenu.push(
-            <Menu.Item key={gradesKey[i]}>{gradesKey[i]}</Menu.Item>,
+            <Menu.Item key={gradesKey[i]}>{gradesKey[i]}</Menu.Item>
           );
         }
         this.setState(
           {
             curriculumChoices: data,
-            gradesMenu: gradesMenu,
+            gradesMenu: gradesMenu
           },
-          function() {},
+          function() {}
         );
       });
   }

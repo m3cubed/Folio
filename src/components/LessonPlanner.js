@@ -102,19 +102,27 @@ class MyFirstGrid extends React.Component {
     let content;
     switch (type) {
       case "Curriculum": {
+        console.log(data);
         const listContent = [];
-        for (let i = 0; i < data[0].length; i++) {
+        for (let i = 0; i < data.keys.length; i++) {
           listContent.push(
-            <List.Item key={data[0][i]}>
+            <List.Item key={data.keys[i]}>
               <List.Item.Meta
-                title={<strong>{data[0][i]}.</strong>}
-                description={data[1][i]}
+                title={<strong>{data.keys[i]}.</strong>}
+                description={data.description[i]}
               />
             </List.Item>
           );
         }
         content = (
           <div className="Modal-Content" key={`CurriculumList${gridID}`}>
+            <h2>
+              <strong>{data.course}</strong>
+            </h2>
+            <h3 style={{ margin: "0px" }}>
+              <i>{data.unit}</i>
+            </h3>
+            <hr style={{ marginTop: "4px" }} />
             <List>{listContent}</List>
           </div>
         );
