@@ -31,3 +31,23 @@
 .Google_Button:active {
   content: url(../Icons/btn_google_signin_light_pressed_web.png);
 }
+
+.Blocker {
+  position: absolute;
+  width: 1040px;
+  height: 250px;
+  background-color: gray;
+  z-index: 3000;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+  opacity: 0.8;
+  text-align: center;
+}
+
+.Header_Blocker {
+  display: inline-block;
+  vertical-align: middle;
+  color: white;
+}

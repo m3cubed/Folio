@@ -2,6 +2,9 @@
   height: 70px;
   text-align: center;
   margin-bottom: 50px !important;
+  position: fixed;
+  width: 100%;
+  z-index: 1000;
 }
 
 .Lesson_Page_TopMenu > .ant-menu-item {

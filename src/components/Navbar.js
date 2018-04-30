@@ -17,14 +17,17 @@ class NavbarHeader extends Component {
     switch (this.state.authenticated) {
       case true:
         return (
-          <Menu.SubMenu title={this.state.currentUserEmail}>
+          <Menu.SubMenu
+            title={this.state.currentUserEmail}
+            style={{ float: "right" }}
+          >
             <Menu.Item key="signout">Sign-out</Menu.Item>
           </Menu.SubMenu>
         );
 
       case false:
         return (
-          <Menu.Item>
+          <Menu.Item style={{ float: "right" }}>
             <Link to="/login">Login</Link>
           </Menu.Item>
         );
@@ -81,6 +84,9 @@ class NavbarHeader extends Component {
             }
           }}
         >
+          <Menu.Item>
+            <Link to="/">Home</Link>
+          </Menu.Item>
           {this.userOrNot(this.state.authenticated)}
           {isAdmin}
 

@@ -1,0 +1,13 @@
+.Table_Row {
+  font-size: 17px;
+  padding: 0px;
+  height: 58px;
+}
+
+.Table_Row > td {
+  padding: 0px !important;
+}
+
+.ant-table-thread > tr > th {
+  padding: 0px !important;
+}

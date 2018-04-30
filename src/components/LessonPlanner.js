@@ -8,6 +8,8 @@ import firebase from "@firebase/app";
 import { store } from "./base";
 import draftToHtml from "draftjs-to-html";
 import TextDraft from "./TextDraft";
+import update from "immutability-helper";
+import QuillEditor from "./Quill";
 
 const Step = Steps.Step;
 
@@ -58,8 +60,9 @@ class MyFirstGrid extends React.Component {
 
   gridNUMincrease = () => {
     const data = this.state.layout;
+    const id = this.createGridUID();
     data.push({
-      i: this.createGridUID(),
+      i: id,
       x: Infinity,
       y: Infinity,
       w: 10,
@@ -67,10 +70,11 @@ class MyFirstGrid extends React.Component {
       minH: 5,
     });
     this.setState(
-      {
-        layout: data,
-        gridNUM: this.state.gridNUM + 1,
-      },
+      update(this.state, {
+        layout: { $set: data },
+        gridNUM: { $set: this.state.gridNUM + 1 },
+        rawData: { $merge: { [id]: { type: "", data: [] } } },
+      }),
       function() {
         this.renderGrids(this.state.layout);
       },
@@ -82,19 +86,13 @@ class MyFirstGrid extends React.Component {
     console.log(gridID);
     console.log(type);
     //Write to rawData the gridID and what it will contain. rawData is meant to be sent to the database for storage.
-    const rawData = this.state.rawData;
-    Object.defineProperty(rawData, gridID, {
-      value: { type: type, data: data },
-      writable: true,
-      enumerable: true,
-      configurable: true,
-    });
     this.setState(
-      {
-        [`${gridID}RawData`]: rawData,
-      },
+      update(this.state, {
+        rawData: {
+          [gridID]: { $merge: { type, data } },
+        },
+      }),
       function() {
-        console.log(this.state);
         //Send gridID to be render to Grid
         this.renderModalContent(gridID);
       },
@@ -105,12 +103,9 @@ class MyFirstGrid extends React.Component {
     const rawData = this.state.rawData;
     const data = rawData[gridID].data;
     const type = rawData[gridID].type;
-    console.log(gridID);
-    console.log(type);
-    console.log(data);
     let content;
     switch (type) {
-      case "Curriculum":
+      case "Curriculum": {
         const listContent = [];
         for (let i = 0; i < data[0].length; i++) {
           listContent.push(
@@ -128,16 +123,22 @@ class MyFirstGrid extends React.Component {
           </div>
         );
         break;
-      case "Text":
+      }
+      case "Text": {
+        console.log(data);
+        if (data.blocks) return null;
+        const JSONdata = JSON.parse(data);
         content = (
-          <div
-            style={{ marginLeft: "15px", marginRight: "15px" }}
-            dangerouslySetInnerHTML={{ __html: draftToHtml(data) }}
+          <QuillEditor
+            theme={"bubble"}
+            default={JSONdata}
+            id={gridID}
+            modalContent={this.handleModalContent}
           />
         );
-
         break;
-      case "Checklist":
+      }
+      case "Checklist": {
         const cards = [];
         const keys = Object.keys(data);
         for (let i in keys) {
@@ -158,7 +159,8 @@ class MyFirstGrid extends React.Component {
         );
         console.log(content);
         break;
-      case "Agenda":
+      }
+      case "Agenda": {
         const steps = [];
         const agendaKeys = Object.keys(data);
         for (let i = 0; i < agendaKeys.length; i++) {
@@ -170,8 +172,13 @@ class MyFirstGrid extends React.Component {
             />,
           );
         }
-        content = <Steps direction="vertical">{steps}</Steps>;
+        content = (
+          <div clasName="Modal-Content" key={`Agenda${gridID}`}>
+            <Steps direction="vertical">{steps}</Steps>
+          </div>
+        );
         break;
+      }
       default:
         return null;
     }
@@ -187,18 +194,14 @@ class MyFirstGrid extends React.Component {
   };
 
   toggleHeading = gridID => {
-    console.log(this.state.showHeadings[gridID]);
     const value = !this.state.showHeadings[gridID];
-    const show = Object.defineProperty(this.state.showHeadings, gridID, {
-      value: value,
-      writable: true,
-      enumerable: true,
-      configurable: true,
-    });
+
     this.setState(
-      {
-        showHeadings: show,
-      },
+      update(this.state, {
+        showHeadings: {
+          [gridID]: { $set: value },
+        },
+      }),
       function() {
         this.renderGrids(this.state.layout);
       },
@@ -408,6 +411,9 @@ class MyFirstGrid extends React.Component {
             });
           }
           const display = gridHeading ? "initial" : "none";
+          const headingHeight = gridHeading
+            ? "calc(100% - 51px)"
+            : "calc(100% - 10px)";
           //Make rows
           rows.push(
             <div className="Grid_Main" key={gridID} data-grid={layout[j]}>
@@ -433,7 +439,6 @@ class MyFirstGrid extends React.Component {
                   });
                 }}
               />
-
               <div className="Grid_Drag_Handle">
                 <span className="Grid_Custom_Menu">
                   <i className="fas fa-caret-down" />
@@ -476,8 +481,9 @@ class MyFirstGrid extends React.Component {
                   </button>
                 </div>
               </div>
-
-              <div className="Grid_Content">{thisState[gridIDContent]}</div>
+              <div className="Grid_Content" style={{ height: headingHeight }}>
+                {thisState[gridIDContent]}
+              </div>
             </div>,
           );
         }
@@ -649,13 +655,14 @@ class MyFirstGrid extends React.Component {
                       : "transparent",
                     color: this.state.viewOnly ? "white" : "inherit",
                   }}
-                  onClick={() =>
+                  onClick={() => {
+                    this.renderGrids(this.state.layout);
                     this.setState({
                       viewOnly: !this.state.viewOnly,
                       isDraggable: !this.state.isDraggable,
                       isResizable: !this.state.isResizable,
-                    })
-                  }
+                    });
+                  }}
                 >
                   <i className="fas fa-eye fa-2x" />
                 </button>

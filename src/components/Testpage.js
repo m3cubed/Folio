@@ -9,7 +9,7 @@ import "../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import CourseSelector from "./CourseSelector";
 import "./Testpage.css";
 import CheckList from "./CheckList";
-import Slate from "./Slate.js";
+import QuillEditor from "./Quill";
 
 class Testpage extends Component {
   constructor(props) {
@@ -138,7 +138,7 @@ class Testpage extends Component {
     return (
       <div>
         <h1>Testing Page</h1>
-        <Slate />
+        <QuillEditor />
         <hr />
         {/*TEST button*/}
         <Button onClick={() => {}}>For Tests</Button>

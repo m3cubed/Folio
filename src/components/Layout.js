@@ -69,14 +69,18 @@ class LessonPlanLayout extends React.Component {
           className="Lesson_Plan_Page"
           style={{ pointerEvents: this.state.isOwner }}
         >
-          <Menu theme="dark" mode="horizontal" className="Lesson_Page_TopMenu">
-            <Menu.Item key="back">
-              <Link to="/LessonPlanList">
-                <i className="fas fa-arrow-left fa-2x" />
-              </Link>
-            </Menu.Item>
-          </Menu>
-          <Route exact path="/lessonplan/:id" component={LessonPlanner} />
+          <Header className="Lesson_Page_TopMenu">
+            <Menu theme="dark" mode="horizontal" style={{ lineHeight: "64px" }}>
+              <Menu.Item key="back">
+                <Link to="/LessonPlanList">
+                  <i className="fas fa-arrow-left fa-2x" />
+                </Link>
+              </Menu.Item>
+            </Menu>
+          </Header>
+          <Content className="Lesson_Plan_Content">
+            <Route exact path="/lessonplan/:id" component={LessonPlanner} />
+          </Content>
           <Footer className="Lesson_Plan_Footer">
             Folio-Planner ©2018 Created by Michael Ma
           </Footer>

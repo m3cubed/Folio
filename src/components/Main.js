@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Switch, Route } from "react-router-dom";
 import LoginPage from "./LoginPage.js";
 import Testpage from "./Testpage";
-import AddLessonPlan from "./AddLessonPlan";
+import AddLessonPlan from "./AddLessonPlan/AddLessonPlan.js";
 import { app } from "./base";
 import Home from "./Home";
 
