@@ -3,7 +3,7 @@ import ReactGridLayout from "react-grid-layout";
 import PropTypes from "prop-types";
 import "./LessonPlanner.css";
 import GridModal from "./Modal";
-import { message, List, Card, Steps } from "antd";
+import { message, List, Card, Steps, notification, Switch } from "antd";
 import firebase from "@firebase/app";
 import { store } from "./base";
 import draftToHtml from "draftjs-to-html";
@@ -102,8 +102,8 @@ class MyFirstGrid extends React.Component {
     let content;
     switch (type) {
       case "Curriculum": {
-        console.log(data);
         const listContent = [];
+
         for (let i = 0; i < data.keys.length; i++) {
           listContent.push(
             <List.Item key={data.keys[i]}>
@@ -114,12 +114,13 @@ class MyFirstGrid extends React.Component {
             </List.Item>
           );
         }
+
         content = (
           <div className="Modal-Content" key={`CurriculumList${gridID}`}>
             <h2>
               <strong>{data.course}</strong>
             </h2>
-            <h3 style={{ margin: "0px" }}>
+            <h3 style={{ margin: "0px", width: "200px" }}>
               <i>{data.unit}</i>
             </h3>
             <hr style={{ marginTop: "4px" }} />
@@ -175,7 +176,7 @@ class MyFirstGrid extends React.Component {
           );
         }
         content = (
-          <div clasName="Modal-Content" key={`Agenda${gridID}`}>
+          <div className="Modal-Content" key={`Agenda${gridID}`}>
             <Steps direction="vertical">{steps}</Steps>
           </div>
         );
@@ -239,25 +240,23 @@ class MyFirstGrid extends React.Component {
             x: 3,
             y: 0,
             w: 30,
-            h: 4,
+            h: 5,
             static: true
           });
           rows.push(
             <div key={gridID} data-grid={layout[j]}>
-              <div>
-                <textarea
-                  className="LessonDate"
-                  placeholder="Date"
-                  onChange={e => {
-                    if (e.target.value === "") {
-                      message.error("Date cannot be empty!");
-                    } else {
-                      this.setState({ lessonDate: e.target.value });
-                    }
-                  }}
-                  defaultValue={this.state.lessonDate}
-                />
-              </div>
+              <textarea
+                className="LessonDate"
+                placeholder="Date"
+                onChange={e => {
+                  if (e.target.value === "") {
+                    message.error("Date cannot be empty!");
+                  } else {
+                    this.setState({ lessonDate: e.target.value });
+                  }
+                }}
+                defaultValue={this.state.lessonDate}
+              />
               <div>
                 <textarea
                   className="LessonText"
@@ -364,20 +363,18 @@ class MyFirstGrid extends React.Component {
         if (j === 0) {
           rows.push(
             <div key={data[j].i} data-grid={layout[j]}>
-              <div>
-                <textarea
-                  className="LessonDate"
-                  placeholder="Date"
-                  onChange={e => {
-                    if (e.target.value === "") {
-                      message.error("Date cannot be empty!");
-                    } else {
-                      this.setState({ lessonDate: e.target.value });
-                    }
-                  }}
-                  defaultValue={this.state.lessonDate}
-                />
-              </div>
+              <textarea
+                className="LessonDate"
+                placeholder="Date"
+                onChange={e => {
+                  if (e.target.value === "") {
+                    message.error("Date cannot be empty!");
+                  } else {
+                    this.setState({ lessonDate: e.target.value });
+                  }
+                }}
+                defaultValue={this.state.lessonDate}
+              />
               <div>
                 <textarea
                   className="LessonText"
@@ -584,6 +581,13 @@ class MyFirstGrid extends React.Component {
     });
   }
 
+  openSaveNotification = () => {
+    notification.open({
+      message: "Lesson Plan Saved!",
+      duration: 2
+    });
+  };
+
   componentWillUnmount() {
     const rawData = JSON.stringify(this.state.rawData);
     store.updateDoc(
@@ -600,6 +604,24 @@ class MyFirstGrid extends React.Component {
       }
     );
   }
+
+  saveDoc = () => {
+    this.openSaveNotification();
+    const rawData = JSON.stringify(this.state.rawData);
+    store.updateDoc(
+      `/users/${this.state.currentUserID}/lessons/${
+        this.props.Id.match.params.id
+      }`,
+      {
+        layoutChange: this.state.layoutChange,
+        rawData: rawData,
+        lessonDate: this.state.lessonDate,
+        lessonTitle: this.state.lessonTitle,
+        headings: this.state.headings,
+        showHeadings: this.state.showHeadings
+      }
+    );
+  };
 
   render() {
     return (
@@ -655,7 +677,7 @@ class MyFirstGrid extends React.Component {
                     backgroundColor: this.state.viewOnly
                       ? "#497fd0"
                       : "transparent",
-                    color: this.state.viewOnly ? "white" : "inherit"
+                    color: this.state.viewOnly ? "white" : "auto"
                   }}
                   onClick={() => {
                     this.renderGrids(this.state.layout);
@@ -667,6 +689,11 @@ class MyFirstGrid extends React.Component {
                   }}
                 >
                   <i className="fas fa-eye fa-2x" />
+                </button>
+              </span>
+              <span className="Add_Grid_Wrapper">
+                <button className="Add_Grid_Button" onClick={this.saveDoc}>
+                  <i className="far fa-save fa-2x" />
                 </button>
               </span>
             </div>

@@ -18,7 +18,7 @@ class ProgressAgenda extends Component {
       agendaListNum: 0,
       itemNumber: 0,
       formMinutes: 10,
-      formDescription: "",
+      formDescription: ""
     };
   }
 
@@ -34,23 +34,25 @@ class ProgressAgenda extends Component {
             actions={[
               <a id={keys[i]} onClick={this.handleRemove}>
                 Remove
-              </a>,
+              </a>
             ]}
           >
             <List.Item.Meta
               title={this.state.agenda[keys[i]].time}
               description={this.state.agenda[keys[i]].description}
             />
-          </List.Item>,
+          </List.Item>
         );
       }
-      const list = <List key={this.state.agendaList}>{listItems}</List>;
+      const list = (
+        <List key={this.state.agendaList}>{listItems.reverse()}</List>
+      );
       this.setState({
-        agendaList: list,
+        agendaList: list
       });
     } else {
       this.setState({
-        agendaList: "",
+        agendaList: ""
       });
     }
   };
@@ -68,19 +70,19 @@ class ProgressAgenda extends Component {
         {
           agenda: Object.assign(
             { [`item${this.state.itemNumber}`]: values },
-            this.state.agenda,
-          ),
+            this.state.agenda
+          )
         },
         function() {
           this.renderAgenda();
           this.props.backToModal(this.state.agenda);
-        },
+        }
       );
     });
     this.setState({
       itemNumber: this.state.itemNumber + 1,
       formMinutes: 10,
-      formDescription: "",
+      formDescription: ""
     });
   };
 
@@ -89,7 +91,7 @@ class ProgressAgenda extends Component {
       getFieldDecorator,
       getFieldsError,
       getFieldError,
-      isFieldTouched,
+      isFieldTouched
     } = this.props.form;
     const timeError = isFieldTouched("time") && getFieldError("time");
     const descriptionError =
@@ -103,9 +105,9 @@ class ProgressAgenda extends Component {
           >
             {getFieldDecorator("time", {
               rules: [
-                { required: true, message: "You must enter a description!" },
+                { required: true, message: "You must enter a description!" }
               ],
-              initialValue: "10",
+              initialValue: "10"
             })(<InputNumber min={0} />)}
             {" min"}
           </Form.Item>
@@ -115,7 +117,7 @@ class ProgressAgenda extends Component {
             help={descriptionError || ""}
           >
             {getFieldDecorator("description", {
-              rules: [{ required: true, message: "You must enter a time!" }],
+              rules: [{ required: true, message: "You must enter a time!" }]
             })(<TextArea placeholder="Type here to write your agenda item" />)}
           </Form.Item>
 

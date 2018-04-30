@@ -15,6 +15,15 @@
   .Lesson_Plan_Footer {
     display: none;
   }
+  .Bottom_Options {
+    display: none;
+  }
+  .react-grid-item:not(.react-grid-placeholder) {
+    border: white;
+  }
+  .Curriculum_Switch {
+    display: none;
+  }
 }
 
 @media screen {
@@ -28,5 +37,12 @@
   }
   .Lesson_Plan_Content {
     margin-top: 100px;
+  }
+  .react-grid-layout:hover .react-grid-item:not(.react-grid-placeholder) {
+    border: 2px solid lightgray;
+  }
+
+  .react-grid-layout:hover .react-grid-item:not(.react-grid-placeholder):hover {
+    border: 2px solid #001529;
   }
 }

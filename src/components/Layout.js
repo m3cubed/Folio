@@ -14,13 +14,13 @@ class MainLayout extends React.Component {
     super();
     this.state = {
       user: "",
-      isOwner: "none",
+      isOwner: "none"
     };
   }
 
   handleUser = user => {
     this.setState({
-      user: user,
+      user: user
     });
   };
 
@@ -51,7 +51,7 @@ class LessonPlanLayout extends React.Component {
   constructor() {
     super();
     this.state = {
-      isOwner: "auto",
+      isOwner: "auto"
     };
   }
 

@@ -41,16 +41,23 @@
 }
 .LessonText {
   position: absolute;
-  height: 49px;
+  height: 73px;
   resize: none;
   border-color: transparent;
-  font-size: 33px;
+  font-size: 45px;
   width: 1050px;
   padding-left: 25px;
   font-weight: bold;
   color: black;
   letter-spacing: 3px;
   overflow: hidden;
+  border: none;
+}
+.LessonDate {
+  outline: none;
+}
+.LessonText:focus {
+  outline: none;
 }
 .Grid_Display {
   position: relative;
@@ -89,13 +96,7 @@
   transition: height 200ms ease;
   background: white;
 }
-.react-grid-layout:hover .react-grid-item:not(.react-grid-placeholder) {
-  border: 2px solid lightgray;
-}
 
-.react-grid-layout:hover .react-grid-item:not(.react-grid-placeholder):hover {
-  border: 2px solid #001529;
-}
 .react-grid-item {
   transition: all 200ms ease;
   transition-property: left, top;
@@ -308,7 +309,7 @@
   height: 100%;
 }
 
-.react-grid-layout:hover ~ .Bottom_Options {
+.Legal_Size_Page:hover .Bottom_Options {
   opacity: 1;
   visibility: visible;
 }
@@ -366,12 +367,15 @@
   border: none;
   border-right: 2px solid white;
 }
+.Add_Grid_Button:hover {
+  color: #a2d6fc;
+}
 
 .Modal-Content .ant-list-item-meta-description {
-  font-size: 16px !important;
+  font-size: 15px !important;
 }
 .Modal-Content .ant-list-item-meta-title {
-  font-size: 17px !important;
+  font-size: 16px !important;
 }
 
 .ant-card-body {
@@ -411,4 +415,16 @@
 .react-grid-item:not(.react-grid-placeholder):hover .ql-editor {
   overflow: scroll;
   animation: 3s delay-overflow;
+}
+
+.Curriculum_Switch {
+  position: relative;
+  float: right;
+  top: -25px;
+  opacity: 0;
+  transition: all 300ms ease;
+}
+
+.react-grid-item:not(.react-grid-placeholder):hover .Curriculum_Switch {
+  opacity: 1;
 }
