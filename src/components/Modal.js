@@ -2,7 +2,6 @@ import React from "react";
 import { Button, Modal, Tabs } from "antd";
 import CourseSelector from "./CourseSelector.js";
 import ProgressAgenda from "./ProgressAgenda.js";
-import TextDraft from "./TextDraft";
 import CheckList from "./CheckList.js";
 import QuillEditor from "./Quill.js";
 
@@ -11,7 +10,7 @@ class GridModal extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     return {
       gridID: nextProps.gridID,
-      visible: nextProps.showModal,
+      visible: nextProps.showModal
     };
   }
   constructor(props) {
@@ -19,7 +18,7 @@ class GridModal extends React.Component {
     this.state = {
       gridID: "",
       visible: false,
-      modalKey: "Curriculum",
+      modalKey: "Curriculum"
     };
   }
 
@@ -28,17 +27,17 @@ class GridModal extends React.Component {
     this.props.handleGridData(
       this.state.modalContent,
       this.props.gridID,
-      this.state.modalKey,
+      this.state.modalKey
     );
     this.props.toggleModal();
     this.setState({
-      visible: false,
+      visible: false
     });
   };
 
   modalContentToState = content => {
     this.setState({
-      modalContent: content,
+      modalContent: content
     });
   };
 
@@ -69,14 +68,14 @@ class GridModal extends React.Component {
               onClick={this.backToGrid.bind(this)}
             >
               Submit
-            </Button>,
+            </Button>
           ]}
         >
           <Tabs
             defaultActiveKey="Curriculum"
             onChange={key => {
               this.setState({
-                modalKey: key,
+                modalKey: key
               });
             }}
           >
