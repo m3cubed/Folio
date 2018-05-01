@@ -23,7 +23,6 @@ class GridModal extends React.Component {
   }
 
   backToGrid = () => {
-    console.log(this.state.modalContent);
     this.props.handleGridData(
       this.state.modalContent,
       this.props.gridID,

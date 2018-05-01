@@ -46,7 +46,6 @@ class AddLessonPlan extends Component {
           context: this,
           then(data) {
             if (Object.keys(data).length === 0) {
-              console.log(data);
               store.addToCollection(
                 `users/${user.uid}/paths`,
                 { Lessons: [], Folders: {} },
