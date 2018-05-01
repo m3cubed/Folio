@@ -46,3 +46,46 @@
     border: 2px solid #001529;
   }
 }
+
+@font-face {
+  font-family: "Proxima Nova";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Proxima Nova"),
+    url(./fonts/proxima-nova/ProximaNova-Regular.otf) format("opentype");
+}
+@font-face {
+  font-family: "Proxima Nova";
+  font-style: normal;
+  font-weight: bold;
+  src: local("Proxima Nova Bold"),
+    url(./fonts/proxima-nova/ProximaNova-Bold.otf) format("opentype");
+}
+@font-face {
+  font-family: "Proxima Nova";
+  font-style: italic;
+  font-weight: normal;
+  src: local("Proxima Nova IT"),
+    url(./fonts/proxima-nova/ProximaNova-RegularIt.otf) format("opentype");
+}
+@font-face {
+  font-family: "Adobe Garamond Pro";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Adobe Garamond Pro"),
+    url(./fonts/Adobe-Garamond-Pro/AGaramondPro-Regular.otf) format("opentype");
+}
+@font-face {
+  font-family: "Adobe Garamond Pro";
+  font-style: italic;
+  font-weight: normal;
+  src: local("Adobe Garamond Pro IT"),
+    url(./fonts/Adobe-Garamond-Pro/AGaramondPro-Italic.otf) format("opentype");
+}
+@font-face {
+  font-family: "Adobe Garamond Pro";
+  font-style: normal;
+  font-weight: bold;
+  src: local("Adobe Garamond Pro Bold"),
+    url(./fonts/Adobe-Garamond-Pro/AGaramondPro-Bold.otf) format("opentype");
+}

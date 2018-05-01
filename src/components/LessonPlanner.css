@@ -52,6 +52,7 @@
   letter-spacing: 3px;
   overflow: hidden;
   border: none;
+  font-family: "Proxima Nova";
 }
 .LessonDate {
   outline: none;
@@ -399,6 +400,8 @@
   outline: none;
   color: black;
   width: 100%;
+  font-family: "Proxima Nova";
+  font-weight: bold;
 }
 
 .Grid_Header::placeholder {
@@ -412,11 +415,11 @@
   visibility: visible;
 }
 
-.react-grid-item:not(.react-grid-placeholder):hover .ql-editor {
-  overflow: scroll;
-  animation: 3s delay-overflow;
+.react-grid-item:not(.react-grid-placeholder):hover ::-webkit-scrollbar-thumb {
+  background: #272727;
+  border: 0px none #ffffff;
+  border-radius: 50px;
 }
-
 .Curriculum_Switch {
   position: relative;
   float: right;
