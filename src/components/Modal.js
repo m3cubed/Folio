@@ -47,6 +47,8 @@ class GridModal extends React.Component {
           title="Pick Your Poison"
           visible={this.state.visible}
           width="1200px"
+          maskClosable={false}
+          destroyOnClose={true}
           onCancel={() => {
             this.props.toggleModal();
             this.setState({ visible: false });
