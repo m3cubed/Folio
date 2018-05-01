@@ -183,11 +183,9 @@ class MyFirstGrid extends React.Component {
   handleModalContent = (data, gridID, type) => {
     //Write to rawData the gridID and what it will contain. rawData is meant to be sent to the database for storage.
     this.setState(
-      update(this.state, {
-        rawData: {
-          [gridID]: { $merge: { type, data } }
-        }
-      }),
+      {
+        rawData: Object.assign({ [gridID]: { type, data } }, this.state.rawData)
+      },
       function() {
         //Send gridID to be render to Grid
         this.renderModalContent(gridID);

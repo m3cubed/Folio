@@ -8,21 +8,9 @@ import HTML5Backend from "react-dnd-html5-backend";
 import "./AddLessonPlan.css";
 import LessonFiles from "./LessonFiles";
 import Folders from "./Folders";
+import { HashLoader } from "react-spinners";
 
 class AddLessonPlan extends Component {
-  state = {};
-  constructor() {
-    super();
-    this.state = {
-      currentUserUID: "",
-      visible: false,
-      lessons: {}
-    };
-    this.lessonsList = this.lessonsList.bind(this);
-    this.foldersList = this.foldersList.bind(this);
-    this.openFolder = this.openFolder.bind(this);
-  }
-
   componentDidMount() {
     document.title = "Lesson Plan List";
     //Call Firestore for user lessons
@@ -65,7 +53,7 @@ class AddLessonPlan extends Component {
                 "Main"
               );
             }
-            this.setState({ viewPaths: data });
+            this.setState({ viewPaths: data, loading: false });
           },
           onFailure(err) {
             console.log(err);
@@ -75,6 +63,18 @@ class AddLessonPlan extends Component {
         return null;
       }
     });
+  }
+  constructor() {
+    super();
+    this.state = {
+      currentUserUID: "",
+      visible: false,
+      lessons: {},
+      loading: true
+    };
+    this.lessonsList = this.lessonsList.bind(this);
+    this.foldersList = this.foldersList.bind(this);
+    this.openFolder = this.openFolder.bind(this);
   }
 
   lessonsList = values => {
@@ -285,9 +285,17 @@ class AddLessonPlan extends Component {
   };
 
   render() {
+    const loading =
+      this.state.loading === true ? (
+        <div style={{ margin: "0px auto" }}>
+          <HashLoader color="#1890ff" loading={this.state.loading} />
+        </div>
+      ) : (
+        this.renderList(this.state.viewPaths)
+      );
     return (
       <div>
-        {this.renderList(this.state.viewPaths)}
+        {loading}
         {/*Add a lesson plan*/}
         <Button
           type="primary"
