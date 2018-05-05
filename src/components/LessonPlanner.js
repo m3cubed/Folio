@@ -456,7 +456,10 @@ class MyFirstGrid extends React.Component {
                   <button
                     className="Grid_Button"
                     onClick={e => {
-                      this.setState({ modalGridID: gridID });
+                      this.setState({
+                        modalGridID: gridID,
+                        modalGridType: this.state.rawData[gridID].type
+                      });
                       this.toggleModal();
                     }}
                   >
@@ -585,7 +588,10 @@ class MyFirstGrid extends React.Component {
                   <button
                     className="Grid_Button"
                     onClick={e => {
-                      this.setState({ modalGridID: gridID });
+                      this.setState({
+                        modalGridID: gridID,
+                        modalGridType: this.state.rawData[gridID].type
+                      });
                       this.toggleModal();
                     }}
                   >
@@ -656,6 +662,7 @@ class MyFirstGrid extends React.Component {
             handleGridData={this.handleModalContent.bind(this)}
             showModal={this.state.showModal}
             toggleModal={this.toggleModal}
+            gridType={this.state.modalGridType}
           />
 
           <ReactGridLayout

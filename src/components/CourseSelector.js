@@ -242,7 +242,6 @@ class CourseSelector extends React.Component {
         context: this
       })
       .then(data => {
-        console.log(data);
         const gradesKey = Object.keys(data);
         const gradesMenu = [];
         for (let i = 0; i < gradesKey.length; i++) {

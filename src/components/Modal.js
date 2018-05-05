@@ -73,7 +73,7 @@ class GridModal extends React.Component {
           ]}
         >
           <Tabs
-            defaultActiveKey="Curriculum"
+            defaultActiveKey={this.state.modalKey}
             onChange={key => {
               this.setState({
                 modalKey: key

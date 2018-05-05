@@ -286,7 +286,7 @@ class AddLessonPlan extends Component {
   render() {
     const loading =
       this.state.loading === true ? (
-        <div>
+        <div style={{ marginTop: "200px", marginBottom: "380px" }}>
           <div style={{ margin: "0px auto", width: "50px" }}>
             <HashLoader color="#1890ff" loading={this.state.loading} />
           </div>
