@@ -15,6 +15,9 @@ class QuillEditor extends React.Component {
         prevState,
       );
     }
+    if (nextProps.agendaKey) {
+      prevState = Object.assign({ agendaKey: nextProps.agendaKey }, prevState);
+    }
     return prevState;
   }
   constructor(props) {
@@ -30,6 +33,13 @@ class QuillEditor extends React.Component {
     }
     if (this.props.modalContent) {
       this.props.modalContent(JSON.stringify(html), this.state.gridID, "Text");
+    }
+    if (this.props.agendaContent) {
+      this.props.agendaContent(
+        JSON.stringify(html),
+        this.state.gridID,
+        this.state.agendaKey,
+      );
     }
   }
 

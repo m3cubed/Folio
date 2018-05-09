@@ -10,7 +10,8 @@ class GridModal extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     return {
       gridID: nextProps.gridID,
-      visible: nextProps.showModal
+      visible: nextProps.showModal,
+      rawData: nextProps.rawData,
     };
   }
   constructor(props) {
@@ -18,7 +19,7 @@ class GridModal extends React.Component {
     this.state = {
       gridID: "",
       visible: false,
-      modalKey: "Curriculum"
+      modalKey: "Curriculum",
     };
   }
 
@@ -26,17 +27,17 @@ class GridModal extends React.Component {
     this.props.handleGridData(
       this.state.modalContent,
       this.props.gridID,
-      this.state.modalKey
+      this.state.modalKey,
     );
     this.props.toggleModal();
     this.setState({
-      visible: false
+      visible: false,
     });
   };
 
   modalContentToState = content => {
     this.setState({
-      modalContent: content
+      modalContent: content,
     });
   };
 
@@ -69,19 +70,20 @@ class GridModal extends React.Component {
               onClick={this.backToGrid.bind(this)}
             >
               Submit
-            </Button>
+            </Button>,
           ]}
         >
           <Tabs
             defaultActiveKey={this.state.modalKey}
             onChange={key => {
               this.setState({
-                modalKey: key
+                modalKey: key,
               });
             }}
           >
             <TabPane tab="Curriculum" key="Curriculum">
               <CourseSelector
+                defaultData={this.state.rawData[this.state.gridID].data}
                 backToModal={this.modalContentToState.bind(this)}
               />
             </TabPane>
@@ -93,10 +95,14 @@ class GridModal extends React.Component {
               />
             </TabPane>
             <TabPane tab="Check List" key="Checklist">
-              <CheckList backToModal={this.modalContentToState.bind(this)} />
+              <CheckList
+                defaultData={this.state.rawData[this.state.gridID].data}
+                backToModal={this.modalContentToState.bind(this)}
+              />
             </TabPane>
             <TabPane tab="Agenda" key="Agenda">
               <ProgressAgenda
+                defaultData={this.state.rawData[this.state.gridID].data}
                 backToModal={this.modalContentToState.bind(this)}
               />
             </TabPane>
