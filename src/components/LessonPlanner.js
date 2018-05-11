@@ -307,7 +307,19 @@ class MyFirstGrid extends React.Component {
             <TimelineEvent
               key={`AgendaItem${i}`}
               createdAt={`${data[agendaKeys[i]].time} min`}
-              title={data[agendaKeys[i]].title}
+              title={
+                <textarea
+                  style={{
+                    border: "none",
+                    height: "25px",
+                    width: "100%",
+                    resize: "none",
+                    overflow: "hidden",
+                  }}
+                >
+                  {data[agendaKeys[i]].title}
+                </textarea>
+              }
               icon={<i className="fas fa-clock fa-lg" />}
               iconColor="#6fba1c"
               iconStyle={{ fontSize: "1.2em" }}
@@ -332,6 +344,7 @@ class MyFirstGrid extends React.Component {
                   width: "100%",
                   backgroundColor: "transparent",
                   border: "none",
+                  fontSize: "14px",
                 }}
                 onChange={e => {
                   this.agendaDescriptionChange(
@@ -705,18 +718,17 @@ class MyFirstGrid extends React.Component {
   };
 
   render() {
-    const renderModal =
-      this.state.modalGridID === "" ? null : (
-        <GridModal
-          Id={this.props.Id.match.params.id}
-          gridID={this.state.modalGridID}
-          handleGridData={this.handleModalContent.bind(this)}
-          showModal={this.state.showModal}
-          toggleModal={this.toggleModal}
-          gridType={this.state.modalGridType}
-          rawData={this.state.rawData}
-        />
-      );
+    const renderModal = this.state.showModal ? (
+      <GridModal
+        Id={this.props.Id.match.params.id}
+        gridID={this.state.modalGridID}
+        handleGridData={this.handleModalContent.bind(this)}
+        showModal={this.state.showModal}
+        toggleModal={this.toggleModal}
+        gridType={this.state.modalGridType}
+        rawData={this.state.rawData}
+      />
+    ) : null;
     return (
       <div className="Legal_Size_Page">
         <div className="TEST">
