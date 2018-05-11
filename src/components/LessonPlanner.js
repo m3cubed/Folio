@@ -9,6 +9,7 @@ import { store } from "./base";
 import update from "immutability-helper";
 import QuillEditor from "./Quill";
 import { Timeline, TimelineEvent } from "react-event-timeline";
+import TextareaAutosize from "react-autosize-textarea";
 
 const Step = Steps.Step;
 
@@ -16,7 +17,7 @@ const styles = {
   fontFamily: "sans-serif",
   textAlign: "left",
   width: "1203px",
-  margin: "0 auto",
+  margin: "0 auto"
 };
 
 class MyFirstGrid extends React.Component {
@@ -27,7 +28,7 @@ class MyFirstGrid extends React.Component {
       if (user) {
         this.setState({
           currentUserID: user.uid,
-          gridLoading: false,
+          gridLoading: false
         });
         store
           .get(
@@ -35,18 +36,18 @@ class MyFirstGrid extends React.Component {
               this.props.Id.match.params.id
             }`,
             {
-              context: this,
-            },
+              context: this
+            }
           )
           .then(data => {
             if (data.headings) {
               this.setState({
-                headings: data.headings,
+                headings: data.headings
               });
             }
             if (data.showHeadings) {
               this.setState({
-                showHeadings: data.showHeadings,
+                showHeadings: data.showHeadings
               });
             }
             if (data.layoutChange) {
@@ -62,7 +63,7 @@ class MyFirstGrid extends React.Component {
                     layout: layout,
                     gridNUM: layout.length,
                     rawData: rawData,
-                    gridLoading: false,
+                    gridLoading: false
                   },
                   function() {
                     const gridIDs = Object.keys(rawData);
@@ -70,7 +71,7 @@ class MyFirstGrid extends React.Component {
                     for (let i in gridIDs) {
                       this.renderModalContent(gridIDs[i]);
                     }
-                  },
+                  }
                 );
               } else {
                 this.setState(
@@ -79,28 +80,28 @@ class MyFirstGrid extends React.Component {
                     lessonDate: data.date,
                     layout: layout,
                     gridNUM: layout.length,
-                    gridLoading: false,
+                    gridLoading: false
                   },
                   function() {
                     this.renderGrids(this.state.layout);
-                  },
+                  }
                 );
               }
             } else {
               this.setState(
                 {
                   lessonTitle: data.lessonTitle,
-                  lessonDate: data.date,
+                  lessonDate: data.date
                 },
                 function() {
                   this.renderGrids(this.state.layout);
-                },
+                }
               );
             }
           });
       } else {
         this.setState({
-          gridLoading: true,
+          gridLoading: true
         });
       }
     });
@@ -117,8 +118,8 @@ class MyFirstGrid extends React.Component {
         lessonDate: this.state.lessonDate,
         lessonTitle: this.state.lessonTitle,
         headings: this.state.headings,
-        showHeadings: this.state.showHeadings,
-      },
+        showHeadings: this.state.showHeadings
+      }
     );
   }
   constructor(props) {
@@ -135,7 +136,7 @@ class MyFirstGrid extends React.Component {
       headings: {},
       modalGridID: "",
       showHeadings: {},
-      viewOnly: false,
+      viewOnly: false
     };
     this.renderGrids = this.renderGrids.bind(this);
     this.handleModalContent = this.handleModalContent.bind(this);
@@ -153,7 +154,7 @@ class MyFirstGrid extends React.Component {
 
   toggleModal = () => {
     this.setState({
-      showModal: !this.state.showModal,
+      showModal: !this.state.showModal
     });
   };
 
@@ -166,17 +167,17 @@ class MyFirstGrid extends React.Component {
       y: Infinity,
       w: 10,
       h: 5,
-      minH: 5,
+      minH: 5
     });
     this.setState(
       update(this.state, {
         layout: { $set: data },
         gridNUM: { $set: this.state.gridNUM + 1 },
-        rawData: { $merge: { [id]: { type: "", data: [] } } },
+        rawData: { $merge: { [id]: { type: "", data: [] } } }
       }),
       function() {
         this.renderGrids(this.state.layout);
-      },
+      }
     );
   };
 
@@ -186,32 +187,41 @@ class MyFirstGrid extends React.Component {
       this.setState(
         update(this.state, {
           rawData: {
-            [gridID]: { $merge: { type, data } },
-          },
+            [gridID]: { $merge: { type, data } }
+          }
         }),
         function() {
           //Send gridID to be render to Grid
           this.renderModalContent(gridID);
-        },
+        }
       );
     } else {
       this.setState(
         {
           rawData: Object.assign(
             { [gridID]: { type, data } },
-            this.state.rawData,
-          ),
+            this.state.rawData
+          )
         },
         function() {
           //Send gridID to be render to Grid
           this.renderModalContent(gridID);
-        },
+        }
       );
     }
   };
 
   agendaDescriptionChange = (content, gridID, key) => {
-    this.state.rawData[gridID].data[key].description = JSON.parse(content);
+    const rawData = this.state.rawData;
+    rawData[gridID].data[key].description = content;
+    this.setState(
+      {
+        rawData: rawData
+      },
+      function() {
+        this.renderGrids(this.state.layout);
+      }
+    );
   };
 
   renderModalContent = gridID => {
@@ -219,6 +229,9 @@ class MyFirstGrid extends React.Component {
     const data = rawData[gridID].data;
     const type = rawData[gridID].type;
     let content;
+    this.setState({
+      modalGridID: ""
+    });
     switch (type) {
       case "Curriculum": {
         const listContent = [];
@@ -230,7 +243,7 @@ class MyFirstGrid extends React.Component {
                 title={<strong>{data.keys[i]}.</strong>}
                 description={data.description[i]}
               />
-            </List.Item>,
+            </List.Item>
           );
         }
 
@@ -241,7 +254,7 @@ class MyFirstGrid extends React.Component {
               style={{
                 margin: "0px",
                 width: "200px",
-                fontFamily: "Proxima Nova",
+                fontFamily: "Proxima Nova"
               }}
             >
               <i>{data.unit}</i>
@@ -276,7 +289,7 @@ class MyFirstGrid extends React.Component {
           cards.push(
             <Card title={keys[i]} key={keys[i]}>
               {cardList}
-            </Card>,
+            </Card>
           );
         }
         content = (
@@ -301,20 +314,35 @@ class MyFirstGrid extends React.Component {
               titleStyle={{ fontSize: "15px" }}
               contentStyle={{ backgroundColor: "#e7f2f6", fontSize: "13px" }}
             >
-              <QuillEditor
-                theme={"bubble"}
+              {/*<QuillEditor
+                theme="snow"
                 default={data[agendaKeys[i]].description}
                 style={{
                   width: "100%",
                   backgroundColor: "transparent",
                   border: "none",
-                  height: "fill",
+                  height: "fill"
                 }}
                 id={gridID}
                 agendaKey={agendaKeys[i]}
                 agendaContent={this.agendaDescriptionChange}
+              />*/}
+              <TextareaAutosize
+                style={{
+                  width: "100%",
+                  backgroundColor: "transparent",
+                  border: "none"
+                }}
+                onChange={e => {
+                  this.agendaDescriptionChange(
+                    e.target.value,
+                    gridID,
+                    agendaKeys[i]
+                  );
+                }}
+                defaultValue={data[agendaKeys[i]].description}
               />
-            </TimelineEvent>,
+            </TimelineEvent>
           );
         }
         content = (
@@ -331,11 +359,11 @@ class MyFirstGrid extends React.Component {
     this.setState(
       {
         [gridIDContent]: content,
-        modalGridID: "",
+        modalGridID: ""
       },
       function() {
         this.renderGrids(this.state.layout);
-      },
+      }
     );
   };
 
@@ -345,27 +373,27 @@ class MyFirstGrid extends React.Component {
     this.setState(
       update(this.state, {
         showHeadings: {
-          [gridID]: { $set: value },
-        },
+          [gridID]: { $set: value }
+        }
       }),
       function() {
         this.renderGrids(this.state.layout);
-      },
+      }
     );
   };
 
   removeGrid = gridID => {
     const newLayout = this.state.layout.filter(
-      item => item.i !== gridID.toString(),
+      item => item.i !== gridID.toString()
     );
     this.setState(
       {
         layout: newLayout,
-        gridNUM: this.state.gridNUM - 1,
+        gridNUM: this.state.gridNUM - 1
       },
       function() {
         this.renderGrids(this.state.layout);
-      },
+      }
     );
   };
 
@@ -387,7 +415,7 @@ class MyFirstGrid extends React.Component {
             y: 0,
             w: 30,
             h: 5,
-            static: true,
+            static: true
           });
           rows.push(
             <div key={gridID} data-grid={layout[j]}>
@@ -417,7 +445,7 @@ class MyFirstGrid extends React.Component {
                   defaultValue={this.state.lessonTitle}
                 />
               </div>
-            </div>,
+            </div>
           );
         } else {
           //const gridID = this.createGridUID();
@@ -429,7 +457,7 @@ class MyFirstGrid extends React.Component {
             y: 0,
             w: 30,
             h: 5,
-            minH: 5,
+            minH: 5
           });
           rows.push(
             <div className="Grid_Main" key={gridID} data-grid={layout[j]}>
@@ -446,11 +474,11 @@ class MyFirstGrid extends React.Component {
                       value: e.target.value,
                       writable: true,
                       enumerable: true,
-                      configurable: true,
-                    },
+                      configurable: true
+                    }
                   );
                   this.setState({
-                    headings: headings,
+                    headings: headings
                   });
                 }}
               />
@@ -464,7 +492,7 @@ class MyFirstGrid extends React.Component {
                     style={{
                       backgroundColor: this.state.showHeadings[gridID]
                         ? "#0c69ce8c"
-                        : "transparent",
+                        : "transparent"
                     }}
                     onClick={this.removeGrid.bind(this, gridID)}
                   >
@@ -478,7 +506,7 @@ class MyFirstGrid extends React.Component {
                     onClick={e => {
                       this.setState({
                         modalGridID: gridID,
-                        modalGridType: this.state.rawData[gridID].type,
+                        modalGridType: this.state.rawData[gridID].type
                       });
                       this.toggleModal();
                     }}
@@ -500,13 +528,13 @@ class MyFirstGrid extends React.Component {
               </div>
 
               <div className="Grid_Content">{thisState[gridIDContent]}</div>
-            </div>,
+            </div>
           );
         }
       }
 
       this.setState({
-        rawData: rawData,
+        rawData: rawData
       });
     } else {
       layout = data;
@@ -542,7 +570,7 @@ class MyFirstGrid extends React.Component {
                   defaultValue={this.state.lessonTitle}
                 />
               </div>
-            </div>,
+            </div>
           );
         } else {
           const thisState = this.state;
@@ -557,7 +585,7 @@ class MyFirstGrid extends React.Component {
               value: true,
               writable: true,
               enumerable: true,
-              configurable: true,
+              configurable: true
             });
           }
           const display = gridHeading ? "initial" : "none";
@@ -581,11 +609,11 @@ class MyFirstGrid extends React.Component {
                       value: e.target.value,
                       writable: true,
                       enumerable: true,
-                      configurable: true,
-                    },
+                      configurable: true
+                    }
                   );
                   this.setState({
-                    headings: headings,
+                    headings: headings
                   });
                 }}
               />
@@ -599,7 +627,7 @@ class MyFirstGrid extends React.Component {
                     style={{
                       backgroundColor: this.state.showHeadings[gridID]
                         ? "#0c69ce8c"
-                        : "transparent",
+                        : "transparent"
                     }}
                     className="Grid_Button"
                     onClick={this.toggleHeading.bind(this, gridID)}
@@ -614,7 +642,7 @@ class MyFirstGrid extends React.Component {
                     onClick={e => {
                       this.setState({
                         modalGridID: gridID,
-                        modalGridType: this.state.rawData[gridID].type,
+                        modalGridType: this.state.rawData[gridID].type
                       });
                       this.toggleModal();
                     }}
@@ -637,7 +665,7 @@ class MyFirstGrid extends React.Component {
               <div className="Grid_Content" style={{ height: headingHeight }}>
                 {thisState[gridIDContent]}
               </div>
-            </div>,
+            </div>
           );
         }
       }
@@ -646,7 +674,7 @@ class MyFirstGrid extends React.Component {
     this.setState({
       layout: layout,
       gridRows: rows,
-      layoutChange: JSON.stringify(layout),
+      layoutChange: JSON.stringify(layout)
     });
     return { rows };
   };
@@ -654,7 +682,7 @@ class MyFirstGrid extends React.Component {
   openSaveNotification = () => {
     notification.open({
       message: "Lesson Plan Saved!",
-      duration: 2,
+      duration: 2
     });
   };
 
@@ -671,8 +699,8 @@ class MyFirstGrid extends React.Component {
         lessonDate: this.state.lessonDate,
         lessonTitle: this.state.lessonTitle,
         headings: this.state.headings,
-        showHeadings: this.state.showHeadings,
-      },
+        showHeadings: this.state.showHeadings
+      }
     );
   };
 
@@ -708,7 +736,7 @@ class MyFirstGrid extends React.Component {
               layout = JSON.stringify(layout);
               this.setState({
                 layoutChange: layout,
-                layout: JSON.parse(layout),
+                layout: JSON.parse(layout)
               });
             }}
             draggableCancel="input, textarea ,button, .ant-modal-wrap, .ant-modal, .Modal_Base, .Grid_Custom_Menu, .Grid_Menu"
@@ -736,14 +764,14 @@ class MyFirstGrid extends React.Component {
                     backgroundColor: this.state.viewOnly
                       ? "#497fd0"
                       : "transparent",
-                    color: this.state.viewOnly ? "white" : "auto",
+                    color: this.state.viewOnly ? "white" : "auto"
                   }}
                   onClick={() => {
                     this.renderGrids(this.state.layout);
                     this.setState({
                       viewOnly: !this.state.viewOnly,
                       isDraggable: !this.state.isDraggable,
-                      isResizable: !this.state.isResizable,
+                      isResizable: !this.state.isResizable
                     });
                   }}
                 >
@@ -783,5 +811,5 @@ const LessonPlanner = props => (
 export default LessonPlanner;
 
 MyFirstGrid.propTypes = {
-  getElementHeight: PropTypes.func,
+  getElementHeight: PropTypes.func
 };
