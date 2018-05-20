@@ -5,7 +5,6 @@ import { Route, Link } from "react-router-dom";
 import { Layout, Menu } from "antd";
 import LessonPlanner from "./LessonPlanner";
 import "./Layout.css";
-import firebase from "firebase";
 
 const { Header, Content, Footer } = Layout;
 
@@ -14,13 +13,13 @@ class MainLayout extends React.Component {
     super();
     this.state = {
       user: "",
-      isOwner: "none"
+      isOwner: "none",
     };
   }
 
   handleUser = user => {
     this.setState({
-      user: user
+      user: user,
     });
   };
 
@@ -51,7 +50,7 @@ class LessonPlanLayout extends React.Component {
   constructor() {
     super();
     this.state = {
-      isOwner: "auto"
+      isOwner: "auto",
     };
   }
 

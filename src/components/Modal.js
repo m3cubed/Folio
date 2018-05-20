@@ -19,7 +19,9 @@ class GridModal extends React.Component {
     this.state = {
       gridID: "",
       visible: false,
-      modalKey: "Curriculum",
+      modalKey: `${
+        this.props.gridType === "" ? "Curriculumn" : this.props.gridType
+      }`,
     };
   }
 

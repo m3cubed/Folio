@@ -3,15 +3,13 @@ import ReactGridLayout from "react-grid-layout";
 import PropTypes from "prop-types";
 import "./LessonPlanner.css";
 import GridModal from "./Modal";
-import { message, List, Card, Steps, notification, Switch } from "antd";
+import { message, List, Card, Steps, notification, Modal, Input } from "antd";
 import firebase from "@firebase/app";
 import { store } from "./base";
 import update from "immutability-helper";
 import QuillEditor from "./Quill";
 import { Timeline, TimelineEvent } from "react-event-timeline";
 import TextareaAutosize from "react-autosize-textarea";
-
-const Step = Steps.Step;
 
 const styles = {
   fontFamily: "sans-serif",
@@ -137,12 +135,36 @@ class MyFirstGrid extends React.Component {
       modalGridID: "",
       showHeadings: {},
       viewOnly: false,
+      showTemplateModal: false,
+      templateTitle: "",
     };
     this.renderGrids = this.renderGrids.bind(this);
     this.handleModalContent = this.handleModalContent.bind(this);
     this.renderModalContent = this.renderModalContent.bind(this);
     this.toggleModal = this.toggleModal.bind(this);
+    this.saveToTemplate = this.saveToTemplate.bind(this);
   }
+
+  saveToTemplate = () => {
+    store
+      .addToCollection(
+        `/users/${this.state.currentUserID}/Templates`,
+        {
+          layoutChange: this.state.layoutChange,
+          rawData: JSON.stringify(this.state.rawData),
+          headings: this.state.headings,
+          showHeadings: this.state.showHeadings,
+        },
+        `${this.state.templateTitle}`,
+      )
+      .then(data => {
+        this.setState({
+          showTemplateModal: !this.state.showTemplateModal,
+          templateTitle: "",
+        });
+      })
+      .catch(err => console.log(err));
+  };
 
   createGridUID = () => {
     const uniqueID =
@@ -316,9 +338,8 @@ class MyFirstGrid extends React.Component {
                     resize: "none",
                     overflow: "hidden",
                   }}
-                >
-                  {data[agendaKeys[i]].title}
-                </textarea>
+                  defaultValue={data[agendaKeys[i]].title}
+                />
               }
               icon={<i className="fas fa-clock fa-lg" />}
               iconColor="#6fba1c"
@@ -729,9 +750,28 @@ class MyFirstGrid extends React.Component {
         rawData={this.state.rawData}
       />
     ) : null;
+    const renderTemplateModal = this.state.showTemplateModal ? (
+      <Modal
+        title="Add Template"
+        visible={this.state.showTemplateModal}
+        onOk={() => {
+          this.state.templateTitle === "" ? null : this.saveToTemplate();
+        }}
+        onCancel={() => {
+          this.setState({
+            showTemplateModal: !this.state.showTemplateModal,
+          });
+        }}
+      >
+        <Input
+          onChange={e => this.setState({ templateTitle: e.target.value })}
+        />
+      </Modal>
+    ) : null;
     return (
       <div className="Legal_Size_Page">
         <div className="TEST">
+          {renderTemplateModal}
           {renderModal}
           <ReactGridLayout
             className="layout"
@@ -803,6 +843,19 @@ class MyFirstGrid extends React.Component {
                   onClick={() => window.print()}
                 >
                   <i className="fas fa-print fa-2x" />
+                </button>
+              </span>
+
+              <span className="Add_Grid_Wrapper">
+                <button
+                  className="Add_Grid_Button"
+                  onClick={() => {
+                    this.setState({
+                      showTemplateModal: !this.state.showTemplateModal,
+                    });
+                  }}
+                >
+                  <i className="fas fa-archive fa-2x" />
                 </button>
               </span>
             </div>

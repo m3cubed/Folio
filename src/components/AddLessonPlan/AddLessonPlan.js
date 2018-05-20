@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { store } from "../base.js";
 import firebase from "firebase";
-import { Input, Modal, Button, Table } from "antd";
+import { Input, Modal, Button, Table, Select, Popconfirm } from "antd";
 import update from "immutability-helper";
 import { DragDropContext } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
@@ -18,29 +18,25 @@ class AddLessonPlan extends Component {
     this.removeAuthListener = firebase.auth().onAuthStateChanged(user => {
       if (user) {
         this.setState({
-          currentUserUID: user.uid
+          currentUserUID: user.uid,
         });
         store.listenToCollection(`users/${user.uid}/lessons`, {
           context: this,
           withIds: true,
           then(data) {
             this.setState({
-              lessons: data
+              lessons: data,
             });
-          }
+          },
         });
         store.listenToCollection(`users/${user.uid}/folders`, {
           context: this,
           withIds: true,
           then(data) {
             this.setState({
-              folders: data
+              folders: data,
             });
-          }
-        });
-        store.syncDoc(`users/${user.uid}/paths/Main`, {
-          context: this,
-          state: "paths"
+          },
         });
         store.listenToDoc(`users/${user.uid}/paths/Main`, {
           context: this,
@@ -49,14 +45,36 @@ class AddLessonPlan extends Component {
               store.addToCollection(
                 `users/${user.uid}/paths`,
                 { Lessons: [], Folders: {} },
-                "Main"
+                "Main",
               );
             }
             this.setState({ viewPaths: data, loading: false });
           },
           onFailure(err) {
             console.log(err);
-          }
+          },
+        });
+        store.listenToCollection(`users/${user.uid}/Templates`, {
+          context: this,
+          withIds: true,
+          then(data) {
+            const newData = [];
+            newData.push(
+              <Select.Option key="No Template" value="No Template">
+                No Template
+              </Select.Option>,
+            );
+            data.forEach(each => {
+              newData.push(
+                <Select.Option value={each.id} key={each.id}>
+                  {each.id}
+                </Select.Option>,
+              );
+            });
+            this.setState({
+              templateData: newData,
+            });
+          },
         });
       } else {
         return null;
@@ -69,7 +87,8 @@ class AddLessonPlan extends Component {
       currentUserUID: "",
       visible: false,
       lessons: {},
-      loading: true
+      loading: true,
+      templateChoice: "No Template",
     };
     this.lessonsList = this.lessonsList.bind(this);
     this.foldersList = this.foldersList.bind(this);
@@ -79,7 +98,7 @@ class AddLessonPlan extends Component {
   lessonsList = values => {
     if (values !== undefined) {
       const result = [];
-      values.map(value => {
+      values.forEach(value => {
         let lesson;
         for (let i in this.state.lessons) {
           if (this.state.lessons[i].id === value) {
@@ -90,7 +109,7 @@ class AddLessonPlan extends Component {
           key: lesson.id,
           Title: lesson.lessonTitle,
           Date: lesson.date,
-          type: lesson.type
+          type: lesson.type,
         });
       });
       return result;
@@ -102,11 +121,11 @@ class AddLessonPlan extends Component {
   foldersList = values => {
     const result = [];
     if (values !== undefined) {
-      Object.keys(values).map(value => {
+      Object.keys(values).forEach(value => {
         let children = [];
         if (values[value]["Lessons"][0] !== undefined) {
           children = children.concat(
-            this.lessonsList(values[value]["Lessons"])
+            this.lessonsList(values[value]["Lessons"]),
           );
         }
         let folder;
@@ -120,7 +139,7 @@ class AddLessonPlan extends Component {
           Title: folder.folderTitle,
           Date: /*`${folder.month} ${folder.day}, ${folder.year}`*/ "-",
           type: folder.type,
-          child: [{ key: 2, Title: "hey", Date: "-", type: "folder" }]
+          child: [{ key: 2, Title: "hey", Date: "-", type: "folder" }],
         });
       });
       return result;
@@ -132,7 +151,7 @@ class AddLessonPlan extends Component {
   openFolder = id => {
     if (id) {
       this.setState({
-        paths: this.state.viewPaths["Folders"][id]
+        paths: this.state.viewPaths["Folders"][id],
       });
     }
   };
@@ -170,14 +189,57 @@ class AddLessonPlan extends Component {
                 default:
                   return null;
               }
-            }
+            },
           },
           {
             title: "Lesson Date",
             dataIndex: "Date",
             key: "Date",
-            width: "30%"
-          }
+            width: "20%",
+          },
+          {
+            title: "Remove",
+            key: "Remove",
+            width: "5%",
+            render: (text, record) => {
+              return (
+                <Popconfirm
+                  title="Are you sure want to delete this item?"
+                  onConfirm={() => {
+                    const paths = this.state.viewPaths;
+
+                    paths.Lessons = paths.Lessons.filter(
+                      each => each !== record.key,
+                    );
+                    store
+                      .updateDoc(
+                        `users/${this.state.currentUserUID}/paths/Main`,
+                        paths,
+                      )
+                      .then(data =>
+                        store.removeDoc(
+                          `users/${this.state.currentUserUID}/lessons/${
+                            record.key
+                          }`,
+                        ),
+                      );
+                  }}
+                >
+                  <button
+                    style={{
+                      backgroundColor: "transparent",
+                      border: "0px",
+                      width: "100%",
+                      height: "57px",
+                      textAlign: "center",
+                    }}
+                  >
+                    <i className="fas fa-trash fa-lg" />
+                  </button>
+                </Popconfirm>
+              );
+            },
+          },
         ];
         return (
           <div>
@@ -210,7 +272,7 @@ class AddLessonPlan extends Component {
     switch (type) {
       case "Lesson": {
         this.setState({
-          visible: false
+          visible: false,
         });
         data = {
           author_id: this.state.currentUserUID,
@@ -220,29 +282,70 @@ class AddLessonPlan extends Component {
           year: nowDate.getFullYear(),
           month: month,
           day: nowDate.getDate(),
-          type: "lesson"
+          type: "lesson",
         };
-
-        //API call
-        store
-          .addToCollection(`users/${this.state.currentUserUID}/lessons`, data)
-          .then(data => {
-            this.setState(
-              update(this.state, {
-                paths: {
-                  Lessons: { $push: [data.id] }
-                }
+        this.state.templateChoice === "No Template"
+          ? //API call
+            store
+              .addToCollection(
+                `users/${this.state.currentUserUID}/lessons`,
+                data,
+              )
+              .then(data => {
+                this.setState(
+                  update(this.state, {
+                    paths: {
+                      Lessons: { $push: [data.id] },
+                    },
+                  }),
+                );
               })
-            );
-          })
-          .catch(err => {
-            //handle error
-          });
+              .catch(err => {
+                //handle error
+              })
+          : store
+              .get(
+                `users/${this.state.currentUserUID}/Templates/${
+                  this.state.templateChoice
+                }`,
+                {
+                  context: this,
+                },
+              )
+              .then(templateData => {
+                console.log(templateData);
+                data = Object.assign(templateData, data);
+                console.log(data);
+              })
+              .then(newD => {
+                store
+                  .addToCollection(
+                    `users/${this.state.currentUserUID}/lessons`,
+                    data,
+                  )
+                  .then(data => {
+                    const paths = this.state.viewPaths;
+                    update(paths, {
+                      paths: {
+                        Lessons: { $push: [data.id] },
+                      },
+                    });
+                    console.log(paths);
+                    store.updateDoc(
+                      `users/${this.state.currentUserUID}/paths/Main`,
+                      paths,
+                    );
+                  })
+                  .catch(err => {
+                    //handle error
+                  });
+              });
+
         break;
       }
       case "Folder": {
         this.setState({
-          visible: false
+          visible: false,
         });
 
         data = {
@@ -253,21 +356,25 @@ class AddLessonPlan extends Component {
           year: nowDate.getFullYear(),
           month: month,
           day: nowDate.getDate(),
-          type: "folder"
+          type: "folder",
         };
 
         //API call
         store
           .addToCollection(`users/${this.state.currentUserUID}/folders`, data)
           .then(data => {
-            this.setState(
-              update(this.state, {
-                paths: {
-                  Folders: {
-                    $merge: { [data.id]: { Folders: {}, Lessons: [] } }
-                  }
-                }
-              })
+            const paths = this.state.viewPaths;
+            update(paths, {
+              paths: {
+                Folders: {
+                  $merge: { [data.id]: { Folders: {}, Lessons: [] } },
+                },
+              },
+            });
+            console.log(paths);
+            store.updateDoc(
+              `users/${this.state.currentUserUID}/paths/Main`,
+              paths,
             );
           })
           .catch(err => {
@@ -279,7 +386,8 @@ class AddLessonPlan extends Component {
         return null;
     }
     this.setState({
-      lessonTitle: ""
+      lessonTitle: "",
+      templateChoice: "No Template",
     });
   };
 
@@ -333,9 +441,21 @@ class AddLessonPlan extends Component {
               onClick={this.handleAdd.bind(this, this.state.type)}
             >
               Create
-            </Button>
+            </Button>,
           ]}
         >
+          <h4>Create from template?</h4>
+          <Select
+            allowClear={true}
+            style={{ minWidth: "300px" }}
+            onChange={value => {
+              this.setState({ templateChoice: value });
+            }}
+          >
+            {this.state.templateData}
+          </Select>
+          <hr style={{ marginTop: "5px", marginBottom: "5px" }} />
+          <h4>Input Title</h4>
           <Input
             placeholder="Input title"
             value={this.state.lessonTitle}
