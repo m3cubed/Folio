@@ -1,5 +1,5 @@
 import React from "react";
-import ReactQuill, { Quill } from "react-quill";
+import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css"; // ES6
 import "react-quill/dist/quill.bubble.css";
 import "./Quill.css";
