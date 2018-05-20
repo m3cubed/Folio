@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { Button, Input, Popover } from "antd";
 import { store } from "./base";
-import CourseSelector from "./CourseSelector";
+import CourseSelector from "./LessonPlan/Model & Modules/CourseSelector";
 import "./Testpage.css";
-import CheckList from "./CheckList";
-import QuillEditor from "./Quill";
+import CheckList from "./LessonPlan/Model & Modules/CheckList";
+import QuillEditor from "./LessonPlan/Model & Modules/Quill";
 
 class Testpage extends Component {
   constructor(props) {
@@ -17,7 +17,7 @@ class Testpage extends Component {
     store.syncDoc(`/Curriculum/Ontario/High School/Choices`, {
       context: this,
       state: "syncstate",
-      then(data) {}
+      then(data) {},
     });
   }
 
@@ -32,7 +32,7 @@ class Testpage extends Component {
       .addToCollection(
         pathUnit,
         { key: this.state.inputKey, description: this.state.inputDescription },
-        `${this.state.inputType}`
+        `${this.state.inputType}`,
       )
       .then(data => {
         let fromChoices = this.state.syncstate;
@@ -41,7 +41,7 @@ class Testpage extends Component {
           var listSubjects = fromChoices[this.state.inputGrade];
           if (
             fromChoices[this.state.inputGrade].hasOwnProperty(
-              this.state.inputSubject
+              this.state.inputSubject,
             )
           ) {
             //if subject already exists
@@ -58,7 +58,7 @@ class Testpage extends Component {
                   this.state.inputCourse
                 ];
               listUnits = listUnits.filter(
-                list => list !== this.state.inputUnit
+                list => list !== this.state.inputUnit,
               );
               listUnits.push(this.state.inputUnit);
               listUnits.sort();
@@ -66,12 +66,12 @@ class Testpage extends Component {
               Object.defineProperty(fromChoices, this.state.inputGrade, {
                 value: {
                   [this.state.inputSubject]: {
-                    [this.state.inputCourse]: listUnits
-                  }
+                    [this.state.inputCourse]: listUnits,
+                  },
                 },
                 writable: true,
                 configurable: true,
-                enumerable: true
+                enumerable: true,
               });
             } else {
               //if course doesn't exist
@@ -79,7 +79,7 @@ class Testpage extends Component {
                 value: [this.state.inputUnit],
                 writable: true,
                 configurable: true,
-                enumerable: true
+                enumerable: true,
               });
             }
           } else {
@@ -88,7 +88,7 @@ class Testpage extends Component {
               value: { [this.state.inputCourse]: [this.state.inputUnit] },
               writable: true,
               configurable: true,
-              enumerable: true
+              enumerable: true,
             });
           }
         } else {
@@ -96,16 +96,16 @@ class Testpage extends Component {
           Object.defineProperty(fromChoices, this.state.inputGrade, {
             value: {
               [this.state.inputSubject]: {
-                [this.state.inputCourse]: [this.state.inputUnit]
-              }
+                [this.state.inputCourse]: [this.state.inputUnit],
+              },
             },
             writable: true,
             configurable: true,
-            enumerable: true
+            enumerable: true,
           });
         }
         this.setState({
-          syncstate: fromChoices
+          syncstate: fromChoices,
         });
         console.log(this.state.syncstate);
       })
@@ -123,7 +123,7 @@ class Testpage extends Component {
     );
 
     let code = {
-      code: codestring
+      code: codestring,
     };
 
     const path = `/Curriculum/Ontario/High School/${this.state.inputGrade}/${
@@ -147,8 +147,8 @@ class Testpage extends Component {
               .get(
                 "/Curriculum/Ontario/High School/Grade 9/Science/SNC1D - Academic Science/A - Scientific Investigation Skills and Career Exploration/Overall Expectations",
                 {
-                  context: this
-                }
+                  context: this,
+                },
               )
               .then(data => console.log(data.key))
           }
@@ -258,20 +258,20 @@ class Testpage extends Component {
             onChange={e => {
               let value = e.target.value.replace(
                 /\bBy the end of this course, students will:\n*/,
-                "\n"
+                "\n",
               );
               value = value.replace(
                 /\bPerforming and Recording \[PR\]\**/,
-                "\n"
+                "\n",
               );
               value = value.replace(
                 /\bAnalysing and Interpreting \[AI\]\**/,
-                "\n"
+                "\n",
               );
               value = value.replace(/\bCommunicating \[C\]\**/, "\n");
               value = value.replace(
                 /\bThroughout this course, students will\:*/,
-                "\n"
+                "\n",
               );
               if (this.state.inputType === "Specific Expectations") {
                 console.log("specific");
@@ -281,19 +281,19 @@ class Testpage extends Component {
                   newValue = newValue.replace(/\S*\.\t[\s\S]*?\n/, "\n");
                   newValue = newValue.replace(
                     /\bSample issue\:[\s\S]*?\n/,
-                    "\n"
+                    "\n",
                   );
                   newValue = newValue.replace(
                     /\bSample questions\:[\s\S]*?\n/,
-                    "\n"
+                    "\n",
                   );
                   newValue = newValue.replace(
                     /\bSample problem\:[\s\S]*?\n/,
-                    "\n"
+                    "\n",
                   );
                   newValue = newValue.replace(
                     /\bBy the end of this course, students will:\n*/,
-                    "\n"
+                    "\n",
                   );
                 }
                 value = newValue;
@@ -313,7 +313,7 @@ class Testpage extends Component {
               console.log(description);
               this.setState({
                 inputKey: key,
-                inputDescription: description
+                inputDescription: description,
               });
             }}
             style={{ height: 300, width: 500 }}

@@ -1,6 +1,6 @@
 import React from "react";
 import { Menu, Dropdown, Icon, List, Checkbox, Row, Col, Spin } from "antd";
-import { store } from "./base";
+import { store } from "../../base";
 import "./CourseSelector.css";
 
 class CourseSelector extends React.Component {

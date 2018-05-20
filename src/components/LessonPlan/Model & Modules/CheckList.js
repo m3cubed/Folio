@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { store } from "./base";
+import { store } from "../../base";
 import { Collapse, Checkbox, Row, Col } from "antd";
 
 const Panel = Collapse.Panel;

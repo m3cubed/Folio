@@ -3,7 +3,7 @@ import Main from "./Main.js";
 import NavbarHeader from "./Navbar";
 import { Route, Link } from "react-router-dom";
 import { Layout, Menu } from "antd";
-import LessonPlanner from "./LessonPlanner";
+import LessonPlanner from "./LessonPlan/LessonPlanner";
 import "./Layout.css";
 
 const { Header, Content, Footer } = Layout;

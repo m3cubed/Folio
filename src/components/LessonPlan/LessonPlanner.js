@@ -2,12 +2,12 @@ import React from "react";
 import ReactGridLayout from "react-grid-layout";
 import PropTypes from "prop-types";
 import "./LessonPlanner.css";
-import GridModal from "./Modal";
+import GridModal from "./Model & Modules/Modal";
 import { message, List, Card, Steps, notification, Modal, Input } from "antd";
 import firebase from "@firebase/app";
-import { store } from "./base";
+import { store } from "../base";
 import update from "immutability-helper";
-import QuillEditor from "./Quill";
+import QuillEditor from "./Model & Modules/Quill";
 import { Timeline, TimelineEvent } from "react-event-timeline";
 import TextareaAutosize from "react-autosize-textarea";
 
