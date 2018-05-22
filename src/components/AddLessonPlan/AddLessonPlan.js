@@ -292,12 +292,11 @@ class AddLessonPlan extends Component {
                 data,
               )
               .then(data => {
-                this.setState(
-                  update(this.state, {
-                    paths: {
-                      Lessons: { $push: [data.id] },
-                    },
-                  }),
+                const paths = this.state.viewPaths;
+                paths["Lessons"].push(data.id);
+                store.updateDoc(
+                  `users/${this.state.currentUserUID}/paths/Main`,
+                  paths,
                 );
               })
               .catch(err => {
@@ -313,9 +312,7 @@ class AddLessonPlan extends Component {
                 },
               )
               .then(templateData => {
-                console.log(templateData);
                 data = Object.assign(templateData, data);
-                console.log(data);
               })
               .then(newD => {
                 store
@@ -325,12 +322,7 @@ class AddLessonPlan extends Component {
                   )
                   .then(data => {
                     const paths = this.state.viewPaths;
-                    update(paths, {
-                      paths: {
-                        Lessons: { $push: [data.id] },
-                      },
-                    });
-                    console.log(paths);
+                    paths["Lessons"].push(data.id);
                     store.updateDoc(
                       `users/${this.state.currentUserUID}/paths/Main`,
                       paths,
@@ -407,6 +399,44 @@ class AddLessonPlan extends Component {
       ) : (
         this.renderList(this.state.viewPaths)
       );
+    const showModal = this.state.visible ? (
+      <Modal
+        title={`Create a ${this.state.type}`}
+        visible={this.state.visible}
+        onCancel={() => this.setState({ visible: false })}
+        footer={[
+          <Button key="back" onClick={() => this.setState({ visible: false })}>
+            Cancel
+          </Button>,
+          <Button
+            key="submit"
+            type="primary"
+            onClick={this.handleAdd.bind(this, this.state.type)}
+          >
+            Create
+          </Button>,
+        ]}
+      >
+        <h4>Create from template?</h4>
+        <Select
+          allowClear={true}
+          style={{ minWidth: "300px" }}
+          onChange={value => {
+            this.setState({ templateChoice: value });
+          }}
+        >
+          {this.state.templateData}
+        </Select>
+        <hr style={{ marginTop: "5px", marginBottom: "5px" }} />
+        <h4>Input Title</h4>
+        <Input
+          placeholder="Input title"
+          value={this.state.lessonTitle}
+          onChange={e => this.setState({ lessonTitle: e.target.value })}
+          onPressEnter={this.handleAdd.bind(this, this.state.type)}
+        />
+      </Modal>
+    ) : null;
     return (
       <div>
         {loading}
@@ -424,45 +454,7 @@ class AddLessonPlan extends Component {
         >
           Add a folder
         </Button>*/}
-        <Modal
-          title={`Create a ${this.state.type}`}
-          visible={this.state.visible}
-          onCancel={() => this.setState({ visible: false })}
-          footer={[
-            <Button
-              key="back"
-              onClick={() => this.setState({ visible: false })}
-            >
-              Cancel
-            </Button>,
-            <Button
-              key="submit"
-              type="primary"
-              onClick={this.handleAdd.bind(this, this.state.type)}
-            >
-              Create
-            </Button>,
-          ]}
-        >
-          <h4>Create from template?</h4>
-          <Select
-            allowClear={true}
-            style={{ minWidth: "300px" }}
-            onChange={value => {
-              this.setState({ templateChoice: value });
-            }}
-          >
-            {this.state.templateData}
-          </Select>
-          <hr style={{ marginTop: "5px", marginBottom: "5px" }} />
-          <h4>Input Title</h4>
-          <Input
-            placeholder="Input title"
-            value={this.state.lessonTitle}
-            onChange={e => this.setState({ lessonTitle: e.target.value })}
-            onPressEnter={this.handleAdd.bind(this, this.state.type)}
-          />
-        </Modal>
+        {showModal}
       </div>
     );
   }
