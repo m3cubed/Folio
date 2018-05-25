@@ -5,6 +5,7 @@ import Testpage from "./Testpage";
 import AddLessonPlan from "./AddLessonPlan/AddLessonPlan.js";
 import { app } from "./base";
 import Home from "./Home";
+import MainChecklist from "./Checklist Quiz/MainChecklist.js";
 
 class Main extends Component {
   constructor() {
@@ -69,6 +70,7 @@ class Main extends Component {
             }}
           />
           <Route exact path="/lessonplanlist" component={AddLessonPlan} />
+          <Route exact path="/checklist" component={MainChecklist} />
         </Switch>
       </main>
     );

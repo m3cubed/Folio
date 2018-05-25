@@ -5,6 +5,7 @@ import { Route, Link } from "react-router-dom";
 import { Layout, Menu } from "antd";
 import LessonPlanner from "./LessonPlan/LessonPlanner";
 import "./Layout.css";
+import MainChecklist from "./Checklist Quiz/MainChecklist.js";
 
 const { Header, Content, Footer } = Layout;
 
@@ -79,6 +80,7 @@ class LessonPlanLayout extends React.Component {
           </Header>
           <Content className="Lesson_Plan_Content">
             <Route exact path="/lessonplan/:id" component={LessonPlanner} />
+            <Route exact path="/checklist" component={MainChecklist} />
           </Content>
           <Footer className="Lesson_Plan_Footer">
             Folio-Planner ©2018 Created by Michael Ma
