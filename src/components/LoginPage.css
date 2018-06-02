@@ -22,13 +22,13 @@
   width: 300px;
 }
 
-.Google_Button {
+.Google_Button:before {
   content: url(../Icons/btn_google_signin_light_normal_web.png);
 }
-.Google_Button:hover {
+.Google_Button:hover:before {
   content: url(../Icons/btn_google_signin_light_focus_web.png);
 }
-.Google_Button:active {
+.Google_Button:active:before {
   content: url(../Icons/btn_google_signin_light_pressed_web.png);
 }
 
